@@ -38,15 +38,19 @@ body{
 body::before{
     content:"";
     position:fixed;
-    width:700px;
-    height:700px;
+    width:900px;
+    height:900px;
     left:50%;
-    top:45%;
+    top:42%;
     transform:translate(-50%,-50%);
     border-radius:50%;
-    background:radial-gradient(circle,
-    rgba(0,210,255,.18),
+
+    background:
+    radial-gradient(circle,
+    rgba(0,180,255,.22),
+    rgba(0,120,255,.10),
     transparent 70%);
+
     z-index:-1;
 }
 
