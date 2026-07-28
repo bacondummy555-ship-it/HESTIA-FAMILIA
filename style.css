@@ -236,14 +236,14 @@ footer {
     position: fixed;
     bottom: 10px;
     left: 0;
-    z-index: 100;
-
     width: 100%;
-    padding: 0;
 
     text-align: center;
-    font-size: 12px;
-    pointer-events: none;
+    color: #777;
+    font-size: 13px;
+    letter-spacing: 2px;
+
+    z-index: 100;
 }
 
 /* Smaller screens and shorter laptop displays */
