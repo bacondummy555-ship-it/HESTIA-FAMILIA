@@ -1,523 +1,61 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
+/* =====================================================
+   HESTIA FAMILIA — MAIN STYLESHEET
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-
-body{
-
-background:#050608;
-font-family:Poppins,sans-serif;
-color:white;
-overflow-x:hidden;
-
-}
-
-/* ---------- Background ---------- */
-
-.stars{
-
-position:fixed;
-inset:0;
-
-background-image:
-
-radial-gradient(white 1px,transparent 1px);
-
-background-size:55px 55px;
-
-opacity:.18;
-
-animation:starsMove 80s linear infinite;
-
-z-index:-2;
-
-}
-
-@keyframes starsMove{
-
-from{
-
-transform:translateY(0);
-
-}
-
-to{
-
-transform:translateY(800px);
-
-}
-
-}
-
-body::before{
-
-content:"";
-
-position:fixed;
-
-width:900px;
-height:900px;
-
-left:50%;
-top:40%;
-
-transform:translate(-50%,-50%);
-
-border-radius:50%;
-
-background:
-
-radial-gradient(circle,
-
-rgba(212,175,55,.18),
-
-transparent 70%);
-
-z-index:-1;
-
-}
-
-/* ---------- Navigation ---------- */
-
-header{
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-padding:25px 80px;
-
-}
-
-.brand{
-
-display:flex;
-
-align-items:center;
-
-gap:15px;
-
-font-family:Cinzel,serif;
-
-font-size:22px;
-
-color:#D4AF37;
-
-}
-
-.brand img{
-
-width:45px;
-
-}
-
-nav{
-
-display:flex;
-
-gap:35px;
-
-}
-
-nav a{
-
-cursor:pointer;
-
-color:#ddd;
-
-text-decoration:none;
-
-transition:.3s;
-
-}
-
-nav a:hover{
-
-color:#D4AF37;
-
-}
-
-.active{
-
-color:#D4AF37;
-
-}
-
-/* ---------- Hero ---------- */
-/* ========================================
-   ONE-SCREEN LAYOUT FIX
-======================================== */
 
 html,
 body {
     width: 100%;
     height: 100%;
-    margin: 0;
+}
+
+html {
     overflow: hidden;
 }
 
 body {
     position: relative;
-}
-
-/* Keep navigation outside the page flow */
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 100;
-
-    width: 100%;
-    height: 80px;
-    padding: 15px 60px;
-}
-
-/* Force the homepage to fit exactly one screen */
-.hero {
-    width: 100%;
-    height: 100vh;
-    height: 100dvh;
-    min-height: 0;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    padding: 85px 20px 55px;
-    transform: none;
     overflow: hidden;
-}
 
-/* Make the crest compact enough to fit */
-.crest {
-    width: 330px;
-    height: 330px;
-    flex-shrink: 0;
-}
-
-.crest-ring {
-    width: 310px;
-    height: 310px;
-}
-
-.hero-logo {
-    width: 255px;
-}
-
-.hero h1 {
-    margin-top: 12px;
-    font-size: clamp(36px, 4vw, 56px);
-    line-height: 1.1;
-}
-
-.hero h2 {
-    margin-top: 8px;
-    font-size: clamp(18px, 2vw, 27px);
-}
-
-.hero p {
-    max-width: 700px;
-    margin: 16px auto;
-    font-size: clamp(14px, 1.2vw, 17px);
-    line-height: 1.6;
-}
-
-.button {
-    margin-top: 4px;
-    padding: 12px 40px;
-}
-
-/* Keep footer below the button */
-footer {
-    position: fixed;
-    bottom: 10px;
-    left: 0;
-    width: 100%;
-
-    text-align: center;
-    color: #777;
-    font-size: 13px;
-    letter-spacing: 2px;
-
-    z-index: 100;
-}
-
-/* Smaller screens and shorter laptop displays */
-@media (max-height: 750px) {
-    header {
-        height: 65px;
-        padding: 10px 40px;
-    }
-
-    .hero {
-        padding-top: 65px;
-        padding-bottom: 35px;
-    }
-
-    .crest {
-        width: 245px;
-        height: 245px;
-    }
-
-    .crest-ring {
-        width: 230px;
-        height: 230px;
-    }
-
-    .hero-logo {
-        width: 185px;
-    }
-
-    .hero h1 {
-        margin-top: 5px;
-        font-size: 38px;
-    }
-
-    .hero h2 {
-        margin-top: 3px;
-        font-size: 19px;
-    }
-
-    .hero p {
-        margin: 8px auto;
-        font-size: 14px;
-        line-height: 1.4;
-    }
-
-    .button {
-        padding: 9px 30px;
-    }
-}
-
-@media (max-width: 700px) {
-    header {
-        height: auto;
-        padding: 12px 18px;
-    }
-
-    .brand span {
-        font-size: 14px;
-    }
-
-    nav {
-        gap: 12px;
-    }
-
-    nav a {
-        font-size: 12px;
-    }
-
-    .crest {
-        width: 260px;
-        height: 260px;
-    }
-
-    .crest-ring {
-        width: 245px;
-        height: 245px;
-    }
-
-    .hero-logo {
-        width: 195px;
-    }
-}
-
-.hero-logo{
-
-width:340px;
-
-filter:drop-shadow(0 0 40px rgba(212,175,55,.35));
-
-animation:float 6s ease-in-out infinite;
-
-}
-
-@keyframes float{
-
-0%,100%{
-
-transform:translateY(0);
-
-}
-
-50%{
-
-transform:translateY(-15px);
-
-}
-
-}
-
-.hero h1{
-
-font-family:Cinzel;
-
-font-size:60px;
-
-margin-top:30px;
-
-letter-spacing:3px;
-
-}
-
-.hero h2{
-
-margin-top:10px;
-
-color:#D4AF37;
-
-font-weight:400;
-
-}
-
-.hero p{
-
-max-width:700px;
-
-margin:25px auto;
-
-line-height:1.8;
-
-color:#bbbbbb;
-
-}
-
-.button{
-
-display:inline-block;
-
-padding:15px 45px;
-
-border:2px solid #D4AF37;
-
-border-radius:40px;
-
-color:#D4AF37;
-
-text-decoration:none;
-
-transition:.35s;
-
-}
-
-.button:hover{
-
-background:#D4AF37;
-
-color:#050608;
-
-}
-
-/* ---------- Footer ---------- */
-
-footer{
-
-position:fixed;
-
-bottom:20px;
-
-left:0;
-
-width:100%;
-
-text-align:center;
-
-color:#777;
-
-font-size:14px;
-
-letter-spacing:2px;
-
-}
-
-/* ========================================
-   LOADING SCREEN
-======================================== */
-
-#loading-screen {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    font-family: "Poppins", sans-serif;
+    color: #ffffff;
 
     background: #030405;
-    transition:
-        opacity 0.8s ease,
-        visibility 0.8s ease;
 }
 
-#loading-screen.hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-}
-
-#loading-screen img {
-    width: 190px;
-    animation: loadingLogo 2s ease-in-out infinite;
-    filter:
-        drop-shadow(0 0 15px rgba(212, 175, 55, 0.4))
-        drop-shadow(0 0 45px rgba(212, 175, 55, 0.25));
-}
-
-#loading-screen h1 {
-    margin-top: 25px;
-    font-family: "Cinzel", serif;
-    font-size: 30px;
-    letter-spacing: 5px;
-    color: #e4c15e;
-}
-
-#loading-screen p {
-    margin-top: 8px;
-    color: #8e846c;
-    letter-spacing: 2px;
-    font-size: 13px;
-}
-
-@keyframes loadingLogo {
-    0%,
-    100% {
-        transform: scale(1);
-        opacity: 0.75;
-    }
-
-    50% {
-        transform: scale(1.06);
-        opacity: 1;
-    }
-}
-
-/* ========================================
-   CINEMATIC BACKGROUND
-======================================== */
+/* =====================================================
+   BACKGROUND
+===================================================== */
 
 .background-effects {
     position: fixed;
     inset: 0;
-    z-index: -5;
+    z-index: -10;
+
     overflow: hidden;
     pointer-events: none;
+
     background:
         radial-gradient(
-            circle at 50% 42%,
-            rgba(143, 108, 28, 0.14),
-            transparent 38%
-        ),
-        radial-gradient(
-            circle at 20% 80%,
-            rgba(28, 48, 78, 0.14),
+            circle at 50% 35%,
+            rgba(173, 128, 25, 0.2),
             transparent 35%
         ),
-        linear-gradient(180deg, #05070b 0%, #030405 100%);
+        radial-gradient(
+            circle at 20% 85%,
+            rgba(18, 33, 55, 0.15),
+            transparent 35%
+        ),
+        linear-gradient(
+            180deg,
+            #06080c 0%,
+            #020304 100%
+        );
 }
 
 .stars {
@@ -525,22 +63,31 @@ letter-spacing:2px;
     inset: -500px 0 0;
 
     background-image:
-        radial-gradient(circle, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
-        radial-gradient(circle, rgba(212, 175, 55, 0.7) 1px, transparent 1px);
+        radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.9) 1px,
+            transparent 1px
+        ),
+        radial-gradient(
+            circle,
+            rgba(212, 175, 55, 0.75) 1px,
+            transparent 1px
+        );
 
     background-position:
         0 0,
-        30px 30px;
+        35px 35px;
 
     background-size:
-        75px 75px,
-        110px 110px;
+        78px 78px,
+        115px 115px;
 
-    opacity: 0.25;
-    animation: moveBackgroundStars 90s linear infinite;
+    opacity: 0.22;
+
+    animation: moveStars 90s linear infinite;
 }
 
-@keyframes moveBackgroundStars {
+@keyframes moveStars {
     from {
         transform: translateY(0);
     }
@@ -550,24 +97,36 @@ letter-spacing:2px;
     }
 }
 
-/* JavaScript-created stars */
+/* Twinkling stars created by JavaScript */
 
 .twinkle {
     position: absolute;
+
     width: 2px;
     height: 2px;
 
     border-radius: 50%;
-    background: #ffffff;
-    box-shadow: 0 0 7px rgba(255, 255, 255, 0.9);
 
-    animation: twinkleStar var(--duration) ease-in-out infinite;
+    background: #ffffff;
+
+    box-shadow:
+        0 0 6px rgba(255, 255, 255, 0.9),
+        0 0 12px rgba(255, 255, 255, 0.35);
+
+    animation:
+        twinkleStar var(--duration)
+        ease-in-out
+        infinite;
+
     animation-delay: var(--delay);
 }
 
 .twinkle.gold {
-    background: #e5c25d;
-    box-shadow: 0 0 9px rgba(229, 194, 93, 0.9);
+    background: #e2bd55;
+
+    box-shadow:
+        0 0 7px rgba(226, 189, 85, 0.95),
+        0 0 15px rgba(226, 189, 85, 0.4);
 }
 
 @keyframes twinkleStar {
@@ -593,15 +152,20 @@ letter-spacing:2px;
     height: var(--size);
 
     border-radius: 50%;
+
     background: #d8a533;
 
     box-shadow:
         0 0 8px rgba(216, 165, 51, 0.9),
-        0 0 18px rgba(216, 165, 51, 0.45);
+        0 0 18px rgba(216, 165, 51, 0.4);
 
     opacity: 0;
 
-    animation: emberRise var(--duration) linear infinite;
+    animation:
+        emberRise var(--duration)
+        linear
+        infinite;
+
     animation-delay: var(--delay);
 }
 
@@ -616,12 +180,14 @@ letter-spacing:2px;
     }
 
     80% {
-        opacity: 0.25;
+        opacity: 0.2;
     }
 
     100% {
         opacity: 0;
-        transform: translate(var(--drift), -110vh) scale(1.2);
+        transform:
+            translate(var(--drift), -110vh)
+            scale(1.2);
     }
 }
 
@@ -633,24 +199,32 @@ letter-spacing:2px;
     width: 140px;
     height: 1px;
 
-    background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0),
-        rgba(255, 239, 185, 0.9)
-    );
-
-    transform: rotate(-35deg);
     opacity: 0;
 
-    animation: shoot var(--duration) ease-in-out infinite;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 238, 183, 0.95)
+        );
+
+    transform: rotate(-35deg);
+
+    animation:
+        shootingStar var(--duration)
+        ease-in-out
+        infinite;
+
     animation-delay: var(--delay);
 }
 
-@keyframes shoot {
+@keyframes shootingStar {
     0%,
     80% {
         opacity: 0;
-        transform: translate(0, 0) rotate(-35deg);
+        transform:
+            translate(0, 0)
+            rotate(-35deg);
     }
 
     84% {
@@ -659,48 +233,255 @@ letter-spacing:2px;
 
     100% {
         opacity: 0;
-        transform: translate(-650px, 650px) rotate(-35deg);
+        transform:
+            translate(-650px, 650px)
+            rotate(-35deg);
     }
 }
 
-/* ========================================
-   ORNAMENTAL GOLD CREST
-======================================== */
+/* =====================================================
+   LOADING SCREEN
+===================================================== */
+
+#loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: #030405;
+
+    transition:
+        opacity 0.8s ease,
+        visibility 0.8s ease;
+}
+
+#loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+#loading-screen img {
+    width: 170px;
+
+    filter:
+        drop-shadow(
+            0 0 15px
+            rgba(212, 175, 55, 0.45)
+        )
+        drop-shadow(
+            0 0 40px
+            rgba(212, 175, 55, 0.2)
+        );
+
+    animation:
+        loadingPulse 2s
+        ease-in-out
+        infinite;
+}
+
+#loading-screen h1 {
+    margin-top: 24px;
+
+    font-family: "Cinzel", serif;
+    font-size: 30px;
+    letter-spacing: 5px;
+
+    color: #e2bd55;
+}
+
+#loading-screen p {
+    margin-top: 8px;
+
+    color: #8f856d;
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+@keyframes loadingPulse {
+    0%,
+    100% {
+        opacity: 0.75;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.06);
+    }
+}
+
+/* =====================================================
+   HEADER / NAVIGATION
+===================================================== */
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+
+    width: 100%;
+    height: 78px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 14px 60px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(3, 4, 5, 0.78),
+            transparent
+        );
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    font-family: "Cinzel", serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+
+    color: #d4af37;
+}
+
+.brand img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 0 8px
+            rgba(212, 175, 55, 0.3)
+        );
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+}
+
+nav a {
+    position: relative;
+
+    color: #e2e2e2;
+    font-size: 16px;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        color 0.25s ease;
+}
+
+nav a::after {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+
+    width: 0;
+    height: 2px;
+
+    background: #d4af37;
+
+    transition:
+        width 0.25s ease;
+}
+
+nav a:hover,
+nav a.active {
+    color: #d4af37;
+}
+
+nav a:hover::after,
+nav a.active::after {
+    width: 100%;
+}
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    padding:
+        82px
+        20px
+        82px;
+
+    overflow: hidden;
+}
+
+/* =====================================================
+   CREST
+===================================================== */
 
 .crest {
     position: relative;
+
+    width: 300px;
+    height: 300px;
+
     display: flex;
     justify-content: center;
     align-items: center;
 
-    width: 410px;
-    height: 410px;
+    flex-shrink: 0;
 
-    animation: crestFloat 6s ease-in-out infinite;
+    animation:
+        crestFloat 6s
+        ease-in-out
+        infinite;
 }
 
 .crest::before {
     content: "";
+
     position: absolute;
-    inset: 20px;
+    inset: 15px;
 
     border-radius: 50%;
 
-    background: radial-gradient(
-        circle,
-        rgba(212, 175, 55, 0.14),
-        rgba(212, 175, 55, 0.03) 55%,
-        transparent 72%
-    );
+    background:
+        radial-gradient(
+            circle,
+            rgba(212, 175, 55, 0.18),
+            rgba(212, 175, 55, 0.04) 55%,
+            transparent 72%
+        );
 
-    filter: blur(4px);
+    filter: blur(5px);
 }
 
 .crest-ring {
     position: relative;
 
-    width: 380px;
-    height: 380px;
+    width: 280px;
+    height: 280px;
 
     display: flex;
     justify-content: center;
@@ -708,41 +489,65 @@ letter-spacing:2px;
 
     border-radius: 50%;
 
-    border: 1px solid rgba(212, 175, 55, 0.55);
+    border:
+        1px solid
+        rgba(212, 175, 55, 0.55);
 
     box-shadow:
-        inset 0 0 25px rgba(212, 175, 55, 0.09),
-        0 0 20px rgba(212, 175, 55, 0.13),
-        0 0 60px rgba(212, 175, 55, 0.08);
+        inset 0 0 22px
+        rgba(212, 175, 55, 0.08),
+        0 0 20px
+        rgba(212, 175, 55, 0.12),
+        0 0 55px
+        rgba(212, 175, 55, 0.08);
 }
 
 .crest-ring::before,
 .crest-ring::after {
     content: "";
+
     position: absolute;
+
     border-radius: 50%;
 }
 
 .crest-ring::before {
-    inset: 13px;
-    border: 1px dashed rgba(212, 175, 55, 0.3);
-    animation: rotateRing 45s linear infinite;
+    inset: 12px;
+
+    border:
+        1px dashed
+        rgba(212, 175, 55, 0.28);
+
+    animation:
+        rotateRing 45s
+        linear
+        infinite;
 }
 
 .crest-ring::after {
-    inset: 31px;
-    border: 1px solid rgba(212, 175, 55, 0.18);
+    inset: 29px;
+
+    border:
+        1px solid
+        rgba(212, 175, 55, 0.16);
 }
 
 .hero-logo {
     position: relative;
     z-index: 2;
 
-    width: 315px;
+    width: 205px;
+    height: auto;
 
     filter:
-        drop-shadow(0 0 16px rgba(212, 175, 55, 0.28))
-        drop-shadow(0 0 45px rgba(212, 175, 55, 0.14));
+        drop-shadow(
+            0 0 15px
+            rgba(212, 175, 55, 0.3)
+        )
+        drop-shadow(
+            0 0 38px
+            rgba(212, 175, 55, 0.14)
+        );
 }
 
 .crest-star {
@@ -750,28 +555,38 @@ letter-spacing:2px;
     z-index: 4;
 
     color: #dfbd57;
-    text-shadow: 0 0 12px rgba(223, 189, 87, 0.8);
 
-    animation: crestStarGlow 2.5s ease-in-out infinite;
+    text-shadow:
+        0 0 12px
+        rgba(223, 189, 87, 0.8);
+
+    animation:
+        crestStarGlow 2.5s
+        ease-in-out
+        infinite;
 }
 
 .star-one {
     top: -12px;
     left: 50%;
-    transform: translateX(-50%);
+
     font-size: 24px;
+
+    transform: translateX(-50%);
 }
 
 .star-two {
-    bottom: 22px;
-    left: 9px;
-    font-size: 16px;
+    bottom: 17px;
+    left: 4px;
+
+    font-size: 15px;
 }
 
 .star-three {
-    right: 9px;
-    bottom: 22px;
-    font-size: 16px;
+    right: 4px;
+    bottom: 17px;
+
+    font-size: 15px;
 }
 
 @keyframes crestFloat {
@@ -781,7 +596,7 @@ letter-spacing:2px;
     }
 
     50% {
-        transform: translateY(-13px);
+        transform: translateY(-10px);
     }
 }
 
@@ -806,42 +621,294 @@ letter-spacing:2px;
     }
 }
 
-/* Prevent the original animation from conflicting */
+/* =====================================================
+   HERO TEXT
+===================================================== */
 
-.hero-logo {
-    animation: none;
+.hero h1 {
+    margin-top: 16px;
+
+    font-family: "Cinzel", serif;
+    font-size: clamp(38px, 4vw, 58px);
+    line-height: 1.05;
+    letter-spacing: 3px;
 }
 
-/* ========================================
-   MOBILE CREST
-======================================== */
+.hero h2 {
+    margin-top: 10px;
 
-@media (max-width: 700px) {
+    color: #d4af37;
+
+    font-size: clamp(18px, 2vw, 25px);
+    font-weight: 400;
+}
+
+.hero p {
+    max-width: 700px;
+
+    margin: 18px auto 0;
+
+    color: #bdbdbd;
+
+    font-size: clamp(14px, 1.2vw, 17px);
+    line-height: 1.65;
+}
+
+/* =====================================================
+   BUTTON
+===================================================== */
+
+.button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 22px;
+    padding: 12px 40px;
+
+    border:
+        2px solid
+        #d4af37;
+
+    border-radius: 999px;
+
+    color: #d4af37;
+
+    font-size: 16px;
+    text-decoration: none;
+
+    background:
+        rgba(5, 6, 8, 0.65);
+
+    transition:
+        color 0.3s ease,
+        background 0.3s ease,
+        box-shadow 0.3s ease,
+        transform 0.3s ease;
+}
+
+.button:hover {
+    color: #050608;
+    background: #d4af37;
+
+    box-shadow:
+        0 0 18px
+        rgba(212, 175, 55, 0.4);
+
+    transform: translateY(-2px);
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 12px;
+    z-index: 100;
+
+    width: 100%;
+
+    color: #777777;
+
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-align: center;
+
+    pointer-events: none;
+}
+
+/* =====================================================
+   SHORT LAPTOP SCREENS
+===================================================== */
+
+@media (max-height: 800px) {
+    header {
+        height: 66px;
+        padding: 10px 45px;
+    }
+
+    .brand img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .brand {
+        font-size: 19px;
+    }
+
+    .hero {
+        padding:
+            68px
+            20px
+            62px;
+    }
+
     .crest {
-        width: 290px;
-        height: 290px;
+        width: 245px;
+        height: 245px;
     }
 
     .crest-ring {
-        width: 275px;
-        height: 275px;
+        width: 228px;
+        height: 228px;
     }
 
     .hero-logo {
-        width: 225px;
+        width: 165px;
     }
 
-    #loading-screen img {
-        width: 140px;
+    .hero h1 {
+        margin-top: 8px;
+        font-size: 40px;
     }
 
-    #loading-screen h1 {
-        font-size: 22px;
-        letter-spacing: 3px;
+    .hero h2 {
+        margin-top: 5px;
+        font-size: 19px;
+    }
+
+    .hero p {
+        margin-top: 10px;
+        font-size: 14px;
+        line-height: 1.45;
+    }
+
+    .button {
+        margin-top: 14px;
+        padding: 9px 32px;
+        font-size: 14px;
+    }
+
+    footer {
+        bottom: 7px;
+        font-size: 10px;
     }
 }
 
-/* Respect reduced-motion accessibility settings */
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 760px) {
+    header {
+        height: auto;
+
+        flex-direction: column;
+
+        padding: 10px 14px;
+        gap: 8px;
+    }
+
+    .brand {
+        font-size: 16px;
+    }
+
+    .brand img {
+        width: 32px;
+        height: 32px;
+    }
+
+    nav {
+        gap: 14px;
+    }
+
+    nav a {
+        font-size: 12px;
+    }
+
+    .hero {
+        padding:
+            110px
+            18px
+            55px;
+    }
+
+    .crest {
+        width: 235px;
+        height: 235px;
+    }
+
+    .crest-ring {
+        width: 220px;
+        height: 220px;
+    }
+
+    .hero-logo {
+        width: 160px;
+    }
+
+    .hero h1 {
+        margin-top: 10px;
+
+        font-size: 34px;
+        letter-spacing: 2px;
+    }
+
+    .hero h2 {
+        font-size: 17px;
+    }
+
+    .hero p {
+        max-width: 92%;
+
+        margin-top: 12px;
+
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .button {
+        margin-top: 16px;
+        padding: 10px 28px;
+
+        font-size: 14px;
+    }
+
+    footer {
+        bottom: 7px;
+        font-size: 9px;
+    }
+}
+
+/* Very small phones */
+
+@media (max-width: 430px) {
+    nav {
+        gap: 9px;
+    }
+
+    nav a {
+        font-size: 10px;
+    }
+
+    .crest {
+        width: 205px;
+        height: 205px;
+    }
+
+    .crest-ring {
+        width: 192px;
+        height: 192px;
+    }
+
+    .hero-logo {
+        width: 140px;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+    }
+
+    .hero h2 {
+        font-size: 15px;
+    }
+}
+
+/* =====================================================
+   REDUCED MOTION
+===================================================== */
 
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -849,5 +916,6 @@ letter-spacing:2px;
     *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
     }
 }
