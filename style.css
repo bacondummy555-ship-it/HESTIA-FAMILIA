@@ -116,9 +116,11 @@ nav a.active::after{
 }
 
 .emblem{
-    width:340px;
-    animation:float 5s ease-in-out infinite;
-    filter:drop-shadow(0 0 35px rgba(0,230,255,.45));
+    width:430px;
+    animation:float 6s ease-in-out infinite;
+    filter:
+        drop-shadow(0 0 15px rgba(255,215,0,.35))
+        drop-shadow(0 0 45px rgba(0,180,255,.35));
 }
 
 @keyframes float{
