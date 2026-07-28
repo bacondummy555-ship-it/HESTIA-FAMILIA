@@ -263,3 +263,421 @@ padding:40px;
 color:#666;
 
 }
+
+/* ========================================
+   LOADING SCREEN
+======================================== */
+
+#loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: #030405;
+    transition:
+        opacity 0.8s ease,
+        visibility 0.8s ease;
+}
+
+#loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+#loading-screen img {
+    width: 190px;
+    animation: loadingLogo 2s ease-in-out infinite;
+    filter:
+        drop-shadow(0 0 15px rgba(212, 175, 55, 0.4))
+        drop-shadow(0 0 45px rgba(212, 175, 55, 0.25));
+}
+
+#loading-screen h1 {
+    margin-top: 25px;
+    font-family: "Cinzel", serif;
+    font-size: 30px;
+    letter-spacing: 5px;
+    color: #e4c15e;
+}
+
+#loading-screen p {
+    margin-top: 8px;
+    color: #8e846c;
+    letter-spacing: 2px;
+    font-size: 13px;
+}
+
+@keyframes loadingLogo {
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.75;
+    }
+
+    50% {
+        transform: scale(1.06);
+        opacity: 1;
+    }
+}
+
+/* ========================================
+   CINEMATIC BACKGROUND
+======================================== */
+
+.background-effects {
+    position: fixed;
+    inset: 0;
+    z-index: -5;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+        radial-gradient(
+            circle at 50% 42%,
+            rgba(143, 108, 28, 0.14),
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at 20% 80%,
+            rgba(28, 48, 78, 0.14),
+            transparent 35%
+        ),
+        linear-gradient(180deg, #05070b 0%, #030405 100%);
+}
+
+.stars {
+    position: absolute;
+    inset: -500px 0 0;
+
+    background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
+        radial-gradient(circle, rgba(212, 175, 55, 0.7) 1px, transparent 1px);
+
+    background-position:
+        0 0,
+        30px 30px;
+
+    background-size:
+        75px 75px,
+        110px 110px;
+
+    opacity: 0.25;
+    animation: moveBackgroundStars 90s linear infinite;
+}
+
+@keyframes moveBackgroundStars {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(500px);
+    }
+}
+
+/* JavaScript-created stars */
+
+.twinkle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 7px rgba(255, 255, 255, 0.9);
+
+    animation: twinkleStar var(--duration) ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+.twinkle.gold {
+    background: #e5c25d;
+    box-shadow: 0 0 9px rgba(229, 194, 93, 0.9);
+}
+
+@keyframes twinkleStar {
+    0%,
+    100% {
+        opacity: 0.15;
+        transform: scale(0.7);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.7);
+    }
+}
+
+/* Floating embers */
+
+.ember {
+    position: absolute;
+    bottom: -20px;
+
+    width: var(--size);
+    height: var(--size);
+
+    border-radius: 50%;
+    background: #d8a533;
+
+    box-shadow:
+        0 0 8px rgba(216, 165, 51, 0.9),
+        0 0 18px rgba(216, 165, 51, 0.45);
+
+    opacity: 0;
+
+    animation: emberRise var(--duration) linear infinite;
+    animation-delay: var(--delay);
+}
+
+@keyframes emberRise {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.5);
+    }
+
+    15% {
+        opacity: 0.7;
+    }
+
+    80% {
+        opacity: 0.25;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(var(--drift), -110vh) scale(1.2);
+    }
+}
+
+/* Shooting stars */
+
+.shooting-star {
+    position: absolute;
+
+    width: 140px;
+    height: 1px;
+
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0),
+        rgba(255, 239, 185, 0.9)
+    );
+
+    transform: rotate(-35deg);
+    opacity: 0;
+
+    animation: shoot var(--duration) ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+@keyframes shoot {
+    0%,
+    80% {
+        opacity: 0;
+        transform: translate(0, 0) rotate(-35deg);
+    }
+
+    84% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-650px, 650px) rotate(-35deg);
+    }
+}
+
+/* ========================================
+   ORNAMENTAL GOLD CREST
+======================================== */
+
+.crest {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 410px;
+    height: 410px;
+
+    animation: crestFloat 6s ease-in-out infinite;
+}
+
+.crest::before {
+    content: "";
+    position: absolute;
+    inset: 20px;
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle,
+        rgba(212, 175, 55, 0.14),
+        rgba(212, 175, 55, 0.03) 55%,
+        transparent 72%
+    );
+
+    filter: blur(4px);
+}
+
+.crest-ring {
+    position: relative;
+
+    width: 380px;
+    height: 380px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(212, 175, 55, 0.55);
+
+    box-shadow:
+        inset 0 0 25px rgba(212, 175, 55, 0.09),
+        0 0 20px rgba(212, 175, 55, 0.13),
+        0 0 60px rgba(212, 175, 55, 0.08);
+}
+
+.crest-ring::before,
+.crest-ring::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+}
+
+.crest-ring::before {
+    inset: 13px;
+    border: 1px dashed rgba(212, 175, 55, 0.3);
+    animation: rotateRing 45s linear infinite;
+}
+
+.crest-ring::after {
+    inset: 31px;
+    border: 1px solid rgba(212, 175, 55, 0.18);
+}
+
+.hero-logo {
+    position: relative;
+    z-index: 2;
+
+    width: 315px;
+
+    filter:
+        drop-shadow(0 0 16px rgba(212, 175, 55, 0.28))
+        drop-shadow(0 0 45px rgba(212, 175, 55, 0.14));
+}
+
+.crest-star {
+    position: absolute;
+    z-index: 4;
+
+    color: #dfbd57;
+    text-shadow: 0 0 12px rgba(223, 189, 87, 0.8);
+
+    animation: crestStarGlow 2.5s ease-in-out infinite;
+}
+
+.star-one {
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+}
+
+.star-two {
+    bottom: 22px;
+    left: 9px;
+    font-size: 16px;
+}
+
+.star-three {
+    right: 9px;
+    bottom: 22px;
+    font-size: 16px;
+}
+
+@keyframes crestFloat {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-13px);
+    }
+}
+
+@keyframes rotateRing {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes crestStarGlow {
+    0%,
+    100% {
+        opacity: 0.45;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Prevent the original animation from conflicting */
+
+.hero-logo {
+    animation: none;
+}
+
+/* ========================================
+   MOBILE CREST
+======================================== */
+
+@media (max-width: 700px) {
+    .crest {
+        width: 290px;
+        height: 290px;
+    }
+
+    .crest-ring {
+        width: 275px;
+        height: 275px;
+    }
+
+    .hero-logo {
+        width: 225px;
+    }
+
+    #loading-screen img {
+        width: 140px;
+    }
+
+    #loading-screen h1 {
+        font-size: 22px;
+        letter-spacing: 3px;
+    }
+}
+
+/* Respect reduced-motion accessibility settings */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
