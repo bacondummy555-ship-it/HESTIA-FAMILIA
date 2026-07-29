@@ -4,6 +4,7 @@
 <head>
 
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -12,6 +13,7 @@
     <title>Members | HESTIA FAMILIA</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link
         rel="preconnect"
         href="https://fonts.gstatic.com"
@@ -45,13 +47,16 @@
 
     </div>
 
-    <!-- Background -->
+    <!-- Animated background -->
 
     <div class="background-effects">
 
         <div class="stars"></div>
+
         <div id="twinkling-stars"></div>
+
         <div id="embers"></div>
+
         <div id="shooting-stars"></div>
 
     </div>
@@ -101,13 +106,13 @@
 
     </header>
 
-    <!-- Main content -->
+    <!-- Members page -->
 
     <main class="members-main">
 
         <section class="members-heading">
 
-            <span>✦</span>
+            <span class="heading-symbol">✦</span>
 
             <h1>Meet the Familia</h1>
 
@@ -118,15 +123,22 @@
 
         </section>
 
-        <!-- Automatically generated Discord members -->
+        <section class="members-section">
 
-        <section class="rank-section">
+            <div class="section-title">
 
-            <h2>Familia Members</h2>
+                <span>✦</span>
+
+                <h2>Familia Members</h2>
+
+                <span>✦</span>
+
+            </div>
 
             <p
                 id="members-status"
                 class="members-status"
+                aria-live="polite"
             >
                 Gathering the Familia...
             </p>
@@ -144,12 +156,7 @@
 
     </main>
 
-    <!-- General website animations -->
-
     <script src="script.js"></script>
-
-    <!-- Automatic Discord member list -->
-
     <script src="members.js"></script>
 
 </body>
