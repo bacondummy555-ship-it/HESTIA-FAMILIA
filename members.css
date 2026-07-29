@@ -556,3 +556,20 @@ body.members-page {
         margin-top: 50px;
     }
 }
+
+/* Remove underline from the logo/title */
+
+header .brand{
+    text-decoration: none !important;
+    border: none !important;
+}
+
+header .brand span{
+    text-decoration: none !important;
+    border: none !important;
+}
+
+header .brand::after{
+    display: none !important;
+    content: none !important;
+}
