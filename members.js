@@ -1,7 +1,7 @@
 "use strict";
 
 const MEMBERS_API_URL =
-    "https://hestia-familia.bacondummy555.workers.dev/members";
+    "https://hestia-members-api.bacondummy555.workers.dev/members";
 
 const memberGrid =
     document.getElementById("member-grid");
