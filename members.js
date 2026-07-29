@@ -1,83 +1,189 @@
+"use strict";
+
 const MEMBERS_API_URL =
     "https://hestia-familia.bacondummy555.workers.dev/members";
 
-const memberGrid = document.getElementById("member-grid");
-const membersStatus = document.getElementById("members-status");
+const memberGrid =
+    document.getElementById("member-grid");
+
+const membersStatus =
+    document.getElementById("members-status");
 
 async function loadDiscordMembers() {
+    if (!memberGrid || !membersStatus) {
+        console.error(
+            "The member grid or status element is missing."
+        );
+
+        return;
+    }
+
     try {
-        const response = await fetch(MEMBERS_API_URL);
+        membersStatus.textContent =
+            "Gathering the Familia...";
+
+        const response = await fetch(
+            MEMBERS_API_URL,
+            {
+                method: "GET",
+                headers: {
+                    Accept: "application/json"
+                },
+                cache: "no-cache"
+            }
+        );
 
         if (!response.ok) {
             throw new Error(
-                `Member request failed: ${response.status}`
+                `The members API returned status ${response.status}.`
             );
         }
 
         const data = await response.json();
 
-        memberGrid.innerHTML = "";
+        if (!Array.isArray(data.members)) {
+            throw new Error(
+                "The members API returned an invalid response."
+            );
+        }
 
-        if (!data.members || data.members.length === 0) {
+        const members = data.members;
+
+        memberGrid.replaceChildren();
+
+        if (members.length === 0) {
             membersStatus.textContent =
-                "No members were found.";
+                "No Familia members were found.";
+
+            showEmptyMessage();
 
             return;
         }
 
-        data.members.forEach(member => {
-            memberGrid.appendChild(
-                createMemberCard(member)
-            );
+        const memberCards =
+            document.createDocumentFragment();
+
+        members.forEach((member) => {
+            const card = createMemberCard(member);
+
+            memberCards.appendChild(card);
         });
 
+        memberGrid.appendChild(memberCards);
+
         membersStatus.textContent =
-            `${data.members.length} members united under the banner`;
+            `${members.length} members united under the banner`;
+
     } catch (error) {
-        console.error(error);
+        console.error(
+            "Discord member loading error:",
+            error
+        );
 
         membersStatus.textContent =
             "The Familia member list could not be loaded.";
+
+        showErrorMessage();
     }
 }
 
 function createMemberCard(member) {
-    const card = document.createElement("a");
+    const displayName =
+        cleanText(member.displayName) ||
+        cleanText(member.username) ||
+        "Unknown Member";
 
-    card.className = "member-card member-link";
-    card.href = member.profileUrl;
-    card.target = "_blank";
-    card.rel = "noopener noreferrer";
+    const username =
+        cleanText(member.username) ||
+        "unknown";
+
+    const profileUrl =
+        isValidDiscordProfile(member.profileUrl)
+            ? member.profileUrl
+            : `https://discord.com/users/${member.id}`;
+
+    const avatarUrl =
+        isValidHttpUrl(member.avatarUrl)
+            ? member.avatarUrl
+            : "https://cdn.discordapp.com/embed/avatars/0.png";
+
+    const card =
+        document.createElement("a");
+
+    card.className =
+        "member-card";
+
+    card.href =
+        profileUrl;
+
+    card.target =
+        "_blank";
+
+    card.rel =
+        "noopener noreferrer";
+
+    card.setAttribute(
+        "aria-label",
+        `Open ${displayName}'s Discord profile`
+    );
 
     const avatarContainer =
         document.createElement("div");
 
-    avatarContainer.className = "member-avatar";
+    avatarContainer.className =
+        "member-avatar";
 
-    const avatar = document.createElement("img");
+    const avatar =
+        document.createElement("img");
 
-    avatar.src = member.avatarUrl;
-    avatar.alt = `${member.displayName}'s Discord avatar`;
-    avatar.loading = "lazy";
+    avatar.src =
+        avatarUrl;
+
+    avatar.alt =
+        `${displayName}'s Discord avatar`;
+
+    avatar.loading =
+        "lazy";
+
+    avatar.decoding =
+        "async";
 
     avatar.onerror = () => {
+        avatar.onerror = null;
+
         avatar.src =
             "https://cdn.discordapp.com/embed/avatars/0.png";
     };
 
-    const rank = document.createElement("p");
+    const rank =
+        document.createElement("p");
 
-    rank.className = "member-rank";
-    rank.textContent = "Familia Member";
+    rank.className =
+        "member-rank";
 
-    const name = document.createElement("h3");
+    rank.textContent =
+        "Familia Member";
 
-    name.textContent = member.displayName;
+    const name =
+        document.createElement("h3");
 
-    const username = document.createElement("p");
+    name.textContent =
+        displayName;
 
-    username.className = "member-description";
-    username.textContent = `@${member.username}`;
+    name.title =
+        displayName;
+
+    const usernameElement =
+        document.createElement("p");
+
+    usernameElement.className =
+        "member-username";
+
+    usernameElement.textContent =
+        `@${username}`;
+
+    usernameElement.title =
+        `@${username}`;
 
     avatarContainer.appendChild(avatar);
 
@@ -85,10 +191,80 @@ function createMemberCard(member) {
         avatarContainer,
         rank,
         name,
-        username
+        usernameElement
     );
 
     return card;
+}
+
+function showEmptyMessage() {
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "members-error";
+
+    message.textContent =
+        "No members are currently available.";
+
+    memberGrid.replaceChildren(message);
+}
+
+function showErrorMessage() {
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "members-error";
+
+    message.textContent =
+        "Unable to connect to Discord. Please refresh the page later.";
+
+    memberGrid.replaceChildren(message);
+}
+
+function cleanText(value) {
+    if (typeof value !== "string") {
+        return "";
+    }
+
+    return value.trim();
+}
+
+function isValidHttpUrl(value) {
+    if (typeof value !== "string") {
+        return false;
+    }
+
+    try {
+        const url =
+            new URL(value);
+
+        return (
+            url.protocol === "https:" ||
+            url.protocol === "http:"
+        );
+    } catch {
+        return false;
+    }
+}
+
+function isValidDiscordProfile(value) {
+    if (!isValidHttpUrl(value)) {
+        return false;
+    }
+
+    try {
+        const url =
+            new URL(value);
+
+        return (
+            url.hostname === "discord.com" &&
+            url.pathname.startsWith("/users/")
+        );
+    } catch {
+        return false;
+    }
 }
 
 loadDiscordMembers();
