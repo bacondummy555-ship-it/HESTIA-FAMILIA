@@ -3,26 +3,29 @@
 ===================================================== */
 
 /*
-This only makes the Members page scrollable.
-Your homepage will remain non-scrollable.
+Only the Members page can scroll.
+Your homepage stays non-scrollable.
 */
 
-html:has(.members-page),
+html:has(body.members-page),
 body.members-page {
     width: 100%;
     min-height: 100%;
     height: auto !important;
+
     overflow-x: hidden !important;
     overflow-y: auto !important;
 }
 
 body.members-page {
     position: relative;
+
     margin: 0;
+
     background: #030507;
 }
 
-/* Main container */
+/* Main page container */
 
 .members-main {
     position: relative;
@@ -33,20 +36,20 @@ body.members-page {
     margin: 0 auto;
 
     padding:
-        135px
+        150px
         0
-        60px;
+        65px;
 }
 
-/* Page introduction */
+/* Main heading */
 
 .members-heading {
-    max-width: 760px;
+    max-width: 780px;
 
     margin:
         0
         auto
-        75px;
+        90px;
 
     text-align: center;
 }
@@ -55,40 +58,44 @@ body.members-page {
     display: inline-block;
 
     color: #d4af37;
-    font-size: 22px;
+
+    font-size: 24px;
 
     text-shadow:
-        0 0 10px rgba(212, 175, 55, 0.8),
-        0 0 25px rgba(212, 175, 55, 0.35);
+        0 0 12px rgba(212, 175, 55, 0.8),
+        0 0 30px rgba(212, 175, 55, 0.35);
 }
 
 .members-heading h1 {
     margin:
-        12px
+        14px
         0
         0;
 
     color: #f4f4f4;
 
     font-family: "Cinzel", serif;
-    font-size: clamp(38px, 5vw, 64px);
+    font-size: clamp(42px, 6vw, 70px);
     font-weight: 700;
-    letter-spacing: 3px;
+
+    letter-spacing: 4px;
     line-height: 1.1;
 
+    text-transform: uppercase;
+
     text-shadow:
-        0 0 20px rgba(255, 255, 255, 0.08);
+        0 0 22px rgba(255, 255, 255, 0.08);
 }
 
 .members-heading p {
-    max-width: 700px;
+    max-width: 720px;
 
     margin:
-        18px
+        22px
         auto
         0;
 
-    color: #a9a9a9;
+    color: #aaa;
 
     font-family: "Poppins", sans-serif;
     font-size: 15px;
@@ -100,7 +107,7 @@ body.members-page {
 .members-section {
     position: relative;
 
-    padding-top: 35px;
+    padding-top: 50px;
 }
 
 .members-section::before {
@@ -110,7 +117,7 @@ body.members-page {
     top: 0;
     left: 50%;
 
-    width: min(850px, 90%);
+    width: min(900px, 90%);
     height: 1px;
 
     transform: translateX(-50%);
@@ -119,24 +126,26 @@ body.members-page {
         linear-gradient(
             90deg,
             transparent,
-            rgba(212, 175, 55, 0.55),
+            rgba(212, 175, 55, 0.6),
             transparent
         );
 }
+
+/* Section heading */
 
 .section-title {
     display: flex;
     justify-content: center;
     align-items: center;
 
-    gap: 15px;
+    gap: 18px;
 
     text-align: center;
 }
 
 .section-title span {
     color: #d4af37;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .section-title h2 {
@@ -145,29 +154,35 @@ body.members-page {
     color: #d4af37;
 
     font-family: "Cinzel", serif;
-    font-size: clamp(25px, 3vw, 36px);
+    font-size: clamp(27px, 4vw, 40px);
+
     letter-spacing: 2px;
+    text-transform: uppercase;
+
+    text-shadow:
+        0 0 16px rgba(212, 175, 55, 0.15);
 }
 
-/* Loading and status message */
+/* Member status */
 
 .members-status {
     min-height: 24px;
 
     margin:
-        15px
+        18px
         0
-        38px;
+        42px;
 
     color: #858585;
 
     font-family: "Poppins", sans-serif;
     font-size: 13px;
+
     letter-spacing: 1px;
     text-align: center;
 }
 
-/* Member grid */
+/* Grid */
 
 .member-grid {
     display: grid;
@@ -217,8 +232,11 @@ body.members-page {
         );
 
     box-shadow:
-        inset 0 0 30px rgba(212, 175, 55, 0.025),
-        0 12px 35px rgba(0, 0, 0, 0.2);
+        inset 0 0 30px
+        rgba(212, 175, 55, 0.025),
+
+        0 12px 35px
+        rgba(0, 0, 0, 0.22);
 
     cursor: pointer;
 
@@ -240,7 +258,7 @@ body.members-page {
         radial-gradient(
             circle at top center,
             rgba(212, 175, 55, 0.16),
-            transparent 55%
+            transparent 58%
         );
 
     transition: opacity 0.3s ease;
@@ -260,7 +278,7 @@ body.members-page {
         linear-gradient(
             90deg,
             transparent,
-            rgba(237, 204, 100, 0.8),
+            rgba(237, 204, 100, 0.85),
             transparent
         );
 }
@@ -269,7 +287,7 @@ body.members-page {
     transform: translateY(-8px);
 
     border-color:
-        rgba(212, 175, 55, 0.68);
+        rgba(212, 175, 55, 0.7);
 
     box-shadow:
         0 20px 50px rgba(0, 0, 0, 0.42),
@@ -281,14 +299,11 @@ body.members-page {
 }
 
 .member-card:focus-visible {
-    outline:
-        2px solid
-        #d4af37;
-
+    outline: 2px solid #d4af37;
     outline-offset: 5px;
 }
 
-/* Discord avatar */
+/* Avatar */
 
 .member-avatar {
     position: relative;
@@ -307,7 +322,7 @@ body.members-page {
 
     border:
         1px solid
-        rgba(212, 175, 55, 0.55);
+        rgba(212, 175, 55, 0.6);
 
     border-radius: 50%;
 
@@ -315,8 +330,11 @@ body.members-page {
         rgba(4, 6, 9, 0.95);
 
     box-shadow:
-        0 0 20px rgba(212, 175, 55, 0.12),
-        inset 0 0 18px rgba(212, 175, 55, 0.06);
+        0 0 22px
+        rgba(212, 175, 55, 0.12),
+
+        inset 0 0 18px
+        rgba(212, 175, 55, 0.06);
 }
 
 .member-avatar img {
@@ -330,7 +348,7 @@ body.members-page {
     object-fit: cover;
 }
 
-/* Discord details */
+/* Member information */
 
 .member-rank {
     position: relative;
@@ -346,6 +364,7 @@ body.members-page {
     font-family: "Poppins", sans-serif;
     font-size: 11px;
     font-weight: 600;
+
     letter-spacing: 2px;
     text-transform: uppercase;
 }
@@ -357,7 +376,7 @@ body.members-page {
     width: 100%;
 
     margin:
-        7px
+        8px
         0
         0;
 
@@ -368,6 +387,7 @@ body.members-page {
     font-family: "Cinzel", serif;
     font-size: 21px;
     font-weight: 700;
+
     letter-spacing: 0.5px;
     line-height: 1.3;
 
@@ -396,19 +416,63 @@ body.members-page {
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    transition:
-        color 0.25s ease;
+    transition: color 0.25s ease;
 }
 
 .member-card:hover .member-username {
     color: #d4af37;
 }
 
-/* Developer credit */
+/* Error box */
+
+.members-error {
+    grid-column: 1 / -1;
+
+    padding:
+        38px
+        25px;
+
+    border:
+        1px solid
+        rgba(212, 175, 55, 0.25);
+
+    border-radius: 16px;
+
+    color: #aaa;
+    text-align: center;
+
+    background:
+        rgba(7, 9, 12, 0.86);
+}
+
+.members-error strong {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: #d4af37;
+
+    font-family: "Cinzel", serif;
+    font-size: 20px;
+}
+
+.members-error p {
+    margin: 0;
+
+    color: #888;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 13px;
+    line-height: 1.7;
+
+    overflow-wrap: anywhere;
+}
+
+/* Developer */
 
 .members-developer {
     margin:
-        65px
+        70px
         0
         0;
 
@@ -416,31 +480,12 @@ body.members-page {
 
     font-family: "Poppins", sans-serif;
     font-size: 11px;
+
     letter-spacing: 2px;
     text-align: center;
 }
 
-/* Error card */
-
-.members-error {
-    grid-column: 1 / -1;
-
-    padding: 35px;
-
-    border:
-        1px solid
-        rgba(212, 175, 55, 0.2);
-
-    border-radius: 14px;
-
-    color: #a0a0a0;
-    text-align: center;
-
-    background:
-        rgba(8, 10, 13, 0.8);
-}
-
-/* Tablet */
+/* Responsive */
 
 @media (max-width: 1050px) {
     .member-grid {
@@ -460,29 +505,36 @@ body.members-page {
     }
 }
 
-/* Mobile */
-
 @media (max-width: 580px) {
     .members-main {
         width: calc(100% - 24px);
 
         padding:
-            135px
+            130px
             0
             45px;
     }
 
     .members-heading {
-        margin-bottom: 55px;
+        margin-bottom: 65px;
     }
 
     .members-heading h1 {
+        font-size: 40px;
         letter-spacing: 1.5px;
     }
 
     .members-heading p {
         font-size: 13px;
         line-height: 1.75;
+    }
+
+    .section-title {
+        gap: 10px;
+    }
+
+    .section-title h2 {
+        font-size: 25px;
     }
 
     .member-grid {
@@ -501,6 +553,6 @@ body.members-page {
     }
 
     .members-developer {
-        margin-top: 45px;
+        margin-top: 50px;
     }
 }
