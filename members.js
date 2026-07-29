@@ -3,187 +3,140 @@
 const MEMBERS_API_URL =
     "https://hestia-familia.bacondummy555.workers.dev/members";
 
-const memberGrid =
-    document.getElementById("member-grid");
-
-const membersStatus =
-    document.getElementById("members-status");
+const memberGrid = document.getElementById("member-grid");
+const membersStatus = document.getElementById("members-status");
 
 async function loadDiscordMembers() {
-    if (!memberGrid || !membersStatus) {
-        console.error(
-            "The member grid or status element is missing."
-        );
-
-        return;
-    }
-
     try {
-        membersStatus.textContent =
-            "Gathering the Familia...";
+        membersStatus.textContent = "Gathering the Familia...";
+        memberGrid.innerHTML = "";
 
         const response = await fetch(
-            MEMBERS_API_URL,
+            `${MEMBERS_API_URL}?time=${Date.now()}`,
             {
                 method: "GET",
+                mode: "cors",
+                cache: "no-store",
                 headers: {
                     Accept: "application/json"
-                },
-                cache: "no-cache"
+                }
             }
         );
 
+        const responseText = await response.text();
+
+        console.log("API status:", response.status);
+        console.log("API response:", responseText);
+
         if (!response.ok) {
             throw new Error(
-                `The members API returned status ${response.status}.`
+                `API error ${response.status}: ${responseText}`
             );
         }
 
-        const data = await response.json();
+        let data;
+
+        try {
+            data = JSON.parse(responseText);
+        } catch {
+            throw new Error(
+                "The Worker did not return valid JSON."
+            );
+        }
 
         if (!Array.isArray(data.members)) {
             throw new Error(
-                "The members API returned an invalid response."
+                "The API response does not contain a members list."
             );
         }
 
-        const members = data.members;
-
-        memberGrid.replaceChildren();
-
-        if (members.length === 0) {
+        if (data.members.length === 0) {
             membersStatus.textContent =
                 "No Familia members were found.";
-
-            showEmptyMessage();
 
             return;
         }
 
-        const memberCards =
-            document.createDocumentFragment();
+        const fragment = document.createDocumentFragment();
 
-        members.forEach((member) => {
-            const card = createMemberCard(member);
-
-            memberCards.appendChild(card);
+        data.members.forEach((member) => {
+            fragment.appendChild(createMemberCard(member));
         });
 
-        memberGrid.appendChild(memberCards);
+        memberGrid.appendChild(fragment);
 
         membersStatus.textContent =
-            `${members.length} members united under the banner`;
+            `${data.members.length} members united under the banner`;
 
     } catch (error) {
-        console.error(
-            "Discord member loading error:",
-            error
-        );
+        console.error("Members error:", error);
 
         membersStatus.textContent =
             "The Familia member list could not be loaded.";
 
-        showErrorMessage();
+        memberGrid.innerHTML = `
+            <div class="members-error">
+                <strong>Connection error</strong>
+                <p>${escapeHtml(error.message)}</p>
+            </div>
+        `;
     }
 }
 
 function createMemberCard(member) {
     const displayName =
-        cleanText(member.displayName) ||
-        cleanText(member.username) ||
+        member.displayName ||
+        member.username ||
         "Unknown Member";
 
     const username =
-        cleanText(member.username) ||
+        member.username ||
         "unknown";
 
-    const profileUrl =
-        isValidDiscordProfile(member.profileUrl)
-            ? member.profileUrl
-            : `https://discord.com/users/${member.id}`;
-
     const avatarUrl =
-        isValidHttpUrl(member.avatarUrl)
-            ? member.avatarUrl
-            : "https://cdn.discordapp.com/embed/avatars/0.png";
+        member.avatarUrl ||
+        "https://cdn.discordapp.com/embed/avatars/0.png";
 
-    const card =
-        document.createElement("a");
+    const profileUrl =
+        member.profileUrl ||
+        `https://discord.com/users/${member.id}`;
 
-    card.className =
-        "member-card";
+    const card = document.createElement("a");
 
-    card.href =
-        profileUrl;
+    card.className = "member-card";
+    card.href = profileUrl;
+    card.target = "_blank";
+    card.rel = "noopener noreferrer";
 
-    card.target =
-        "_blank";
+    const avatarContainer = document.createElement("div");
+    avatarContainer.className = "member-avatar";
 
-    card.rel =
-        "noopener noreferrer";
+    const avatar = document.createElement("img");
 
-    card.setAttribute(
-        "aria-label",
-        `Open ${displayName}'s Discord profile`
-    );
-
-    const avatarContainer =
-        document.createElement("div");
-
-    avatarContainer.className =
-        "member-avatar";
-
-    const avatar =
-        document.createElement("img");
-
-    avatar.src =
-        avatarUrl;
-
-    avatar.alt =
-        `${displayName}'s Discord avatar`;
-
-    avatar.loading =
-        "lazy";
-
-    avatar.decoding =
-        "async";
+    avatar.src = avatarUrl;
+    avatar.alt = `${displayName}'s Discord avatar`;
+    avatar.loading = "lazy";
 
     avatar.onerror = () => {
         avatar.onerror = null;
-
         avatar.src =
             "https://cdn.discordapp.com/embed/avatars/0.png";
     };
 
-    const rank =
-        document.createElement("p");
+    const rank = document.createElement("p");
 
-    rank.className =
-        "member-rank";
+    rank.className = "member-rank";
+    rank.textContent = "Familia Member";
 
-    rank.textContent =
-        "Familia Member";
+    const name = document.createElement("h3");
 
-    const name =
-        document.createElement("h3");
+    name.textContent = displayName;
+    name.title = displayName;
 
-    name.textContent =
-        displayName;
+    const usernameText = document.createElement("p");
 
-    name.title =
-        displayName;
-
-    const usernameElement =
-        document.createElement("p");
-
-    usernameElement.className =
-        "member-username";
-
-    usernameElement.textContent =
-        `@${username}`;
-
-    usernameElement.title =
-        `@${username}`;
+    usernameText.className = "member-username";
+    usernameText.textContent = `@${username}`;
 
     avatarContainer.appendChild(avatar);
 
@@ -191,80 +144,16 @@ function createMemberCard(member) {
         avatarContainer,
         rank,
         name,
-        usernameElement
+        usernameText
     );
 
     return card;
 }
 
-function showEmptyMessage() {
-    const message =
-        document.createElement("div");
-
-    message.className =
-        "members-error";
-
-    message.textContent =
-        "No members are currently available.";
-
-    memberGrid.replaceChildren(message);
-}
-
-function showErrorMessage() {
-    const message =
-        document.createElement("div");
-
-    message.className =
-        "members-error";
-
-    message.textContent =
-        "Unable to connect to Discord. Please refresh the page later.";
-
-    memberGrid.replaceChildren(message);
-}
-
-function cleanText(value) {
-    if (typeof value !== "string") {
-        return "";
-    }
-
-    return value.trim();
-}
-
-function isValidHttpUrl(value) {
-    if (typeof value !== "string") {
-        return false;
-    }
-
-    try {
-        const url =
-            new URL(value);
-
-        return (
-            url.protocol === "https:" ||
-            url.protocol === "http:"
-        );
-    } catch {
-        return false;
-    }
-}
-
-function isValidDiscordProfile(value) {
-    if (!isValidHttpUrl(value)) {
-        return false;
-    }
-
-    try {
-        const url =
-            new URL(value);
-
-        return (
-            url.hostname === "discord.com" &&
-            url.pathname.startsWith("/users/")
-        );
-    } catch {
-        return false;
-    }
+function escapeHtml(value) {
+    const element = document.createElement("div");
+    element.textContent = String(value);
+    return element.innerHTML;
 }
 
 loadDiscordMembers();
