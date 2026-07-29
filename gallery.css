@@ -576,11 +576,21 @@ body.gallery-page {
         max-height: 62vh;
     }
 }
+
+/* Remove underline below HESTIA FAMILIA brand */
+
 .brand {
     text-decoration: none !important;
+    border-bottom: none !important;
 }
 
 .brand span {
     text-decoration: none !important;
     border-bottom: none !important;
+}
+
+.brand::after,
+.brand span::after {
+    display: none !important;
+    content: none !important;
 }
