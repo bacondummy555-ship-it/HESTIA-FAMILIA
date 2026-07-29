@@ -576,3 +576,11 @@ body.gallery-page {
         max-height: 62vh;
     }
 }
+.brand {
+    text-decoration: none !important;
+}
+
+.brand span {
+    text-decoration: none !important;
+    border-bottom: none !important;
+}
