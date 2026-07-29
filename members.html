@@ -3,241 +3,154 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>Members | HESTIA FAMILIA</title>
+    <title>Members | HESTIA FAMILIA</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet"
+    >
 
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="members.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="members.css">
 
 </head>
 
 <body class="members-page">
 
-<div id="loading-screen">
-    <img src="HESTIACLANLOGOREAL.png" alt="Hestia Familia Logo">
-    <h1>HESTIA FAMILIA</h1>
-    <p>Meet the Familia</p>
-</div>
+    <!-- Loading screen -->
 
-<div class="background-effects">
-    <div class="stars"></div>
-    <div id="twinkling-stars"></div>
-    <div id="embers"></div>
-    <div id="shooting-stars"></div>
-</div>
+    <div id="loading-screen">
 
-<header>
+        <img
+            src="HESTIACLANLOGOREAL.png"
+            alt="Hestia Familia Logo"
+        >
 
-    <div class="brand">
-        <img src="HESTIACLANLOGOREAL.png" alt="HESTIA Logo">
-        <span>HESTIA FAMILIA</span>
+        <h1>HESTIA FAMILIA</h1>
+
+        <p>Meet the Familia</p>
+
     </div>
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a class="active" href="members.html">Members</a>
-        <a href="gallery.html">Gallery</a>
-        <a href="rules.html">Rules</a>
-        <a href="https://discord.gg/Nd5yAmPu9a" target="_blank">Discord</a>
-    </nav>
+    <!-- Background -->
 
-</header>
+    <div class="background-effects">
 
-<main class="members-main">
+        <div class="stars"></div>
+        <div id="twinkling-stars"></div>
+        <div id="embers"></div>
+        <div id="shooting-stars"></div>
 
-    <section class="members-heading">
+    </div>
 
-        <span>✦</span>
+    <!-- Navigation -->
 
-        <h1>Meet the Familia</h1>
+    <header>
 
-        <p>
-            United under one banner, each member carries the strength,
-            loyalty, and honor of Hestia Familia.
+        <a class="brand" href="index.html">
+
+            <img
+                src="HESTIACLANLOGOREAL.png"
+                alt="HESTIA Logo"
+            >
+
+            <span>HESTIA FAMILIA</span>
+
+        </a>
+
+        <nav>
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a class="active" href="members.html">
+                Members
+            </a>
+
+            <a href="gallery.html">
+                Gallery
+            </a>
+
+            <a href="rules.html">
+                Rules
+            </a>
+
+            <a
+                href="https://discord.gg/Nd5yAmPu9a"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Discord
+            </a>
+
+        </nav>
+
+    </header>
+
+    <!-- Main content -->
+
+    <main class="members-main">
+
+        <section class="members-heading">
+
+            <span>✦</span>
+
+            <h1>Meet the Familia</h1>
+
+            <p>
+                United under one banner, each member carries the
+                strength, loyalty, and honor of Hestia Familia.
+            </p>
+
+        </section>
+
+        <!-- Automatically generated Discord members -->
+
+        <section class="rank-section">
+
+            <h2>Familia Members</h2>
+
+            <p
+                id="members-status"
+                class="members-status"
+            >
+                Gathering the Familia...
+            </p>
+
+            <div
+                id="member-grid"
+                class="member-grid"
+            ></div>
+
+        </section>
+
+        <p class="members-developer">
+            Developed by salt
         </p>
 
-    </section>
+    </main>
 
-    <section class="rank-section">
+    <!-- General website animations -->
 
-    <h2>Familia Members</h2>
+    <script src="script.js"></script>
 
-    <p id="members-status" class="members-status">
-        Gathering the Familia...
-    </p>
+    <!-- Automatic Discord member list -->
 
-    <div id="member-grid" class="member-grid"></div>
-
-</section>
-
-    <section class="rank-section">
-
-    <h2>Familia Members</h2>
-
-    <p id="members-status" class="members-status">
-        Gathering the Familia...
-    </p>
-
-    <div id="member-grid" class="member-grid"></div>
-
-</section>
-
-    <section class="rank-section">
-
-    <h2>Familia Members</h2>
-
-    <p id="members-status" class="members-status">
-        Gathering the Familia...
-    </p>
-
-    <div id="member-grid" class="member-grid"></div>
-
-</section>
-
-    <section class="rank-section">
-
-        <h2>Staff</h2>
-
-        <div class="member-grid">
-
-            <article class="member-card">
-
-                <div class="member-avatar placeholder-avatar">
-                    HF
-                </div>
-
-                <p class="member-rank">
-                    Staff
-                </p>
-
-                <h3>Add Name</h3>
-
-                <p class="member-description">
-                    Familia Support
-                </p>
-
-            </article>
-
-            <article class="member-card">
-
-                <div class="member-avatar placeholder-avatar">
-                    HF
-                </div>
-
-                <p class="member-rank">
-                    Staff
-                </p>
-
-                <h3>Add Name</h3>
-
-                <p class="member-description">
-                    Familia Support
-                </p>
-
-            </article>
-
-            <article class="member-card">
-
-                <div class="member-avatar placeholder-avatar">
-                    HF
-                </div>
-
-                <p class="member-rank">
-                    Staff
-                </p>
-
-                <h3>Add Name</h3>
-
-                <p class="member-description">
-                    Familia Support
-                </p>
-
-            </article>
-
-        </div>
-
-    </section>
-
-    <section class="rank-section">
-
-        <h2>Members</h2>
-
-        <div class="member-grid">
-
-            <article class="member-card">
-
-                <div class="member-avatar placeholder-avatar">
-                    HF
-                </div>
-
-                <p class="member-rank">
-                    Member
-                </p>
-
-                <h3>Add Name</h3>
-
-            </article>
-
-            <article class="member-card">
-
-                <div class="member-avatar placeholder-avatar">
-                    HF
-                </div>
-
-                <p class="member-rank">
-                    Member
-                </p>
-
-                <h3>Add Name</h3>
-
-            </article>
-
-            <article class="member-card">
-
-                <div class="member-avatar placeholder-avatar">
-                    HF
-                </div>
-
-                <p class="member-rank">
-                    Member
-                </p>
-
-                <h3>Add Name</h3>
-
-            </article>
-
-            <article class="member-card">
-
-                <div class="member-avatar placeholder-avatar">
-                    HF
-                </div>
-
-                <p class="member-rank">
-                    Member
-                </p>
-
-                <h3>Add Name</h3>
-
-            </article>
-
-        </div>
-
-    </section>
-
-    <p class="members-developer">
-        Developed by salt
-    </p>
-
-</main>
-
-<script src="script.js"></script>
+    <script src="members.js"></script>
 
 </body>
 
