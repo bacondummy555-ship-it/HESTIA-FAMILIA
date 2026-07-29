@@ -1,5 +1,5 @@
 const MEMBERS_API_URL =
-    "https://hestia-members-api.YOUR-SUBDOMAIN.workers.dev/members";
+    "https://hestia-familia.bacondummy555.workers.dev/members";
 
 const memberGrid = document.getElementById("member-grid");
 const membersStatus = document.getElementById("members-status");
