@@ -325,14 +325,33 @@ async function loadVisitorCounter() {
             `${VISITOR_API_URL}${endpoint}`,
             {
                 method,
-                cache: "no-store"
+                cache: "no-store",
+
+                headers: {
+                    Accept: "application/json"
+                }
             }
         );
 
         const data = await response.json();
 
-        visitorElement.textContent =
-            Number(data.visitors || 0).toLocaleString();
+        if (
+            !response.ok ||
+            data.success !== true ||
+            typeof data.visitors !== "number"
+        ) {
+            throw new Error(
+                data.error ||
+                "Unable to load visitor count."
+            );
+        }
+
+        visitorElement.dataset.target =
+            String(data.visitors);
+
+        visitorElement.textContent = "0";
+
+        animateNumber(visitorElement);
 
         if (!alreadyCountedToday) {
             localStorage.setItem(
@@ -340,6 +359,7 @@ async function loadVisitorCounter() {
                 today
             );
         }
+
     } catch (error) {
         console.error(
             "Visitor counter error:",
