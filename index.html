@@ -1,94 +1,700 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
 
-<title>HESTIA FAMILIA</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<link rel="icon" href="webicon.png" sizes="any">
-<link rel="icon" type="image/png" href="webicon.png">
-    
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta
+        name="description"
+        content="Official website of Hestia Familia — a gaming community built on loyalty, unity, and honor."
+    >
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>HESTIA FAMILIA</title>
 
-<link rel="stylesheet" href="style.css">
+    <!-- Favicon -->
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="webicon.png"
+    >
+
+    <!-- Fonts -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Styles -->
+
+    <link rel="stylesheet" href="style.css?v=200">
+    <link rel="stylesheet" href="home.css?v=200">
 
 </head>
 
-<body>
+<body class="home-page">
 
-<div id="loading-screen">
-    <img src="HESTIACLANLOGOREAL.png" alt="Hestia Familia Logo">
-    <h1>HESTIA FAMILIA</h1>
-    <p>Under the Banner, We are United</p>
-</div>
+    <!-- Loading screen -->
 
-<div class="background-effects">
-    <div class="stars"></div>
-    <div id="twinkling-stars"></div>
-    <div id="embers"></div>
-    <div id="shooting-stars"></div>
-</div>
+    <div id="loading-screen">
 
-<header>
+        <img
+            src="HESTIACLANLOGOREAL.png"
+            alt="Hestia Familia Logo"
+        >
 
-    <div class="brand">
-        <img src="HESTIACLANLOGOREAL.png" alt="HESTIA Logo">
-        <span>HESTIA FAMILIA</span>
+        <h1>HESTIA FAMILIA</h1>
+
+        <p>Under the Banner, We are United</p>
+
     </div>
 
-    <nav>
-        <a class="active" href="index.html">Home</a>
-        <a href="members.html">Members</a>
-        <a href="gallery.html">Gallery</a>
-        <a href="rules.html">Rules</a>
-        <a href="https://discord.gg/Nd5yAmPu9a" target="_blank">Discord</a>
-    </nav>
+    <!-- Animated background -->
 
-</header>
+    <div class="background-effects">
 
-<section class="hero">
+        <div class="stars"></div>
 
-    <div class="crest">
-        <div class="crest-ring">
+        <div id="twinkling-stars"></div>
 
-            <span class="crest-star star-one">✦</span>
-            <span class="crest-star star-two">✦</span>
-            <span class="crest-star star-three">✦</span>
+        <div id="embers"></div>
+
+        <div id="shooting-stars"></div>
+
+    </div>
+
+    <!-- Navigation -->
+
+    <header>
+
+        <a
+            class="brand"
+            href="#home"
+            aria-label="Go to homepage"
+        >
 
             <img
                 src="HESTIACLANLOGOREAL.png"
-                class="hero-logo"
-                alt="Hestia Familia Crest"
+                alt="Hestia Familia Logo"
             >
 
+            <span>HESTIA FAMILIA</span>
+
+        </a>
+
+        <nav>
+
+            <a
+                class="active"
+                href="#home"
+            >
+                Home
+            </a>
+
+            <a href="members.html">
+                Members
+            </a>
+
+            <a href="gallery.html">
+                Gallery
+            </a>
+
+            <a href="rules.html">
+                Rules
+            </a>
+
+            <a
+                href="https://discord.gg/Nd5yAmPu9a"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Discord
+            </a>
+
+        </nav>
+
+    </header>
+
+    <main>
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section
+            class="home-hero"
+            id="home"
+        >
+
+            <div class="hero-atmosphere"></div>
+
+            <div class="hero-layout">
+
+                <div class="hero-crest-column">
+
+                    <div class="crest">
+
+                        <div class="crest-ring">
+
+                            <span class="crest-star star-one">
+                                ✦
+                            </span>
+
+                            <span class="crest-star star-two">
+                                ✦
+                            </span>
+
+                            <span class="crest-star star-three">
+                                ✦
+                            </span>
+
+                            <img
+                                src="HESTIACLANLOGOREAL.png"
+                                class="hero-logo"
+                                alt="Hestia Familia Crest"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="hero-copy">
+
+                    <p class="hero-eyebrow">
+                        Welcome beneath the banner
+                    </p>
+
+                    <h1>
+                        HESTIA<br>
+                        FAMILIA
+                    </h1>
+
+                    <h2>
+                        Under the Banner, We are United
+                    </h2>
+
+                    <p class="hero-description">
+                        A family built on loyalty, honor, friendship,
+                        and unforgettable adventures. Together we rise,
+                        together we grow, and together we carry the banner.
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <a
+                            class="primary-button"
+                            href="https://discord.gg/Nd5yAmPu9a"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Join Discord
+                        </a>
+
+                        <a
+                            class="secondary-button"
+                            href="#about"
+                        >
+                            Discover Hestia
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <a
+                class="hero-scroll"
+                href="#about"
+                aria-label="Scroll to the next section"
+            >
+
+                <span>Explore</span>
+
+                <i></i>
+
+            </a>
+
+        </section>
+
+        <!-- =================================================
+             ABOUT
+        ================================================== -->
+
+        <section
+            class="home-section about-section reveal-section"
+            id="about"
+        >
+
+            <div class="section-heading">
+
+                <span>✦</span>
+
+                <p>Who We Are</p>
+
+                <h2>The Banner We Carry</h2>
+
+                <span>✦</span>
+
+            </div>
+
+            <p class="section-introduction">
+                Hestia Familia is more than a gaming clan. We are a
+                community united by loyalty, friendship, respect, and
+                shared experiences. Every member carries the banner with
+                pride and contributes to the story we continue to build.
+            </p>
+
+            <div class="value-grid">
+
+                <article class="value-card">
+
+                    <div class="value-icon">
+                        🛡
+                    </div>
+
+                    <h3>Honor</h3>
+
+                    <p>
+                        Respect every member and represent the Familia
+                        with dignity and pride.
+                    </p>
+
+                </article>
+
+                <article class="value-card">
+
+                    <div class="value-icon">
+                        ⚔
+                    </div>
+
+                    <h3>Unity</h3>
+
+                    <p>
+                        We fight together, build together, and support
+                        one another through every challenge.
+                    </p>
+
+                </article>
+
+                <article class="value-card">
+
+                    <div class="value-icon">
+                        ✦
+                    </div>
+
+                    <h3>Legacy</h3>
+
+                    <p>
+                        Every member leaves a mark and contributes to
+                        the continuing story of Hestia Familia.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+        <!-- =================================================
+             STATISTICS
+        ================================================== -->
+
+        <section
+            class="home-section statistics-section reveal-section"
+            id="statistics"
+        >
+
+            <div class="section-heading">
+
+                <span>✦</span>
+
+                <p>Our Community</p>
+
+                <h2>Hestia by the Numbers</h2>
+
+                <span>✦</span>
+
+            </div>
+
+            <p
+                id="home-statistics-status"
+                class="statistics-status"
+            >
+                Gathering Familia records...
+            </p>
+
+            <div class="statistics-grid">
+
+                <article class="statistic-card">
+
+                    <div class="statistic-icon">
+                        👥
+                    </div>
+
+                    <strong
+                        class="statistic-number"
+                        id="stat-members"
+                        data-target="0"
+                    >
+                        0
+                    </strong>
+
+                    <span>Total Members</span>
+
+                </article>
+
+                <article class="statistic-card">
+
+                    <div class="statistic-icon">
+                        👑
+                    </div>
+
+                    <strong
+                        class="statistic-number"
+                        id="stat-leadership"
+                        data-target="0"
+                    >
+                        0
+                    </strong>
+
+                    <span>Leadership</span>
+
+                </article>
+
+                <article class="statistic-card">
+
+                    <div class="statistic-icon">
+                        🛡
+                    </div>
+
+                    <strong
+                        class="statistic-number"
+                        id="stat-admins"
+                        data-target="0"
+                    >
+                        0
+                    </strong>
+
+                    <span>Admins</span>
+
+                </article>
+
+                <article class="statistic-card">
+
+                    <div class="statistic-icon">
+                        ⚔
+                    </div>
+
+                    <strong
+                        class="statistic-number"
+                        id="stat-staff"
+                        data-target="0"
+                    >
+                        0
+                    </strong>
+
+                    <span>Staff</span>
+
+                </article>
+
+            </div>
+
+        </section>
+
+        <!-- =================================================
+             WHY JOIN
+        ================================================== -->
+
+        <section
+            class="home-section join-benefits-section reveal-section"
+            id="why-join"
+        >
+
+            <div class="section-heading">
+
+                <span>✦</span>
+
+                <p>Find Your Place</p>
+
+                <h2>Why Join Hestia?</h2>
+
+                <span>✦</span>
+
+            </div>
+
+            <div class="benefit-grid">
+
+                <article class="benefit-card">
+
+                    <div class="benefit-icon">
+                        🤝
+                    </div>
+
+                    <h3>Friendly Community</h3>
+
+                    <p>
+                        A welcoming Familia where members can form
+                        friendships and feel at home.
+                    </p>
+
+                </article>
+
+                <article class="benefit-card">
+
+                    <div class="benefit-icon">
+                        🎉
+                    </div>
+
+                    <h3>Active Events</h3>
+
+                    <p>
+                        Community activities, game nights, memorable
+                        gatherings, and shared adventures.
+                    </p>
+
+                </article>
+
+                <article class="benefit-card">
+
+                    <div class="benefit-icon">
+                        🛡
+                    </div>
+
+                    <h3>Fair Leadership</h3>
+
+                    <p>
+                        A leadership team that values respect,
+                        responsibility, and a positive environment.
+                    </p>
+
+                </article>
+
+                <article class="benefit-card">
+
+                    <div class="benefit-icon">
+                        👑
+                    </div>
+
+                    <h3>Long-Term Legacy</h3>
+
+                    <p>
+                        We build more than victories. We are creating
+                        a community and legacy that lasts.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+        <!-- =================================================
+             FEATURED GALLERY
+        ================================================== -->
+
+        <section
+            class="home-section featured-gallery-section reveal-section"
+            id="featured-gallery"
+        >
+
+            <div class="section-heading">
+
+                <span>✦</span>
+
+                <p>Shared Adventures</p>
+
+                <h2>Memories of the Familia</h2>
+
+                <span>✦</span>
+
+            </div>
+
+            <div class="featured-gallery-grid">
+
+                <a
+                    class="featured-image featured-image-large"
+                    href="gallery.html"
+                >
+
+                    <img
+                        src="gallery1.jpg"
+                        alt="Hestia Familia memory"
+                        loading="lazy"
+                    >
+
+                    <span>
+                        Familia Memories
+                    </span>
+
+                </a>
+
+                <a
+                    class="featured-image"
+                    href="gallery.html"
+                >
+
+                    <img
+                        src="gallery2.jpg"
+                        alt="Hestia Familia adventure"
+                        loading="lazy"
+                    >
+
+                    <span>
+                        Shared Adventures
+                    </span>
+
+                </a>
+
+                <a
+                    class="featured-image"
+                    href="gallery.html"
+                >
+
+                    <img
+                        src="gallery3.jpg"
+                        alt="Hestia Familia gathering"
+                        loading="lazy"
+                    >
+
+                    <span>
+                        Clan Gatherings
+                    </span>
+
+                </a>
+
+                <a
+                    class="featured-image featured-image-wide"
+                    href="gallery.html"
+                >
+
+                    <img
+                        src="gallery4.jpg"
+                        alt="Hestia Familia community"
+                        loading="lazy"
+                    >
+
+                    <span>
+                        Under the Banner
+                    </span>
+
+                </a>
+
+            </div>
+
+            <div class="section-button-wrapper">
+
+                <a
+                    class="outlined-button"
+                    href="gallery.html"
+                >
+                    View Full Gallery
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- =================================================
+             FINAL CTA
+        ================================================== -->
+
+        <section class="final-cta reveal-section">
+
+            <div class="final-cta-overlay"></div>
+
+            <div class="final-cta-content">
+
+                <span class="cta-crown">
+                    ♛
+                </span>
+
+                <p>Answer the call</p>
+
+                <h2>
+                    Ready to Join the Familia?
+                </h2>
+
+                <div class="cta-divider"></div>
+
+                <p class="cta-description">
+                    Find your place beneath the banner. A new chapter
+                    of Hestia Familia is waiting for you.
+                </p>
+
+                <a
+                    class="primary-button"
+                    href="https://discord.gg/Nd5yAmPu9a"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Join Discord
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+
+    <footer class="home-footer">
+
+        <div class="footer-brand">
+
+            <img
+                src="HESTIACLANLOGOREAL.png"
+                alt=""
+            >
+
+            <span>HESTIA FAMILIA</span>
+
         </div>
-    </div>
 
-    <h1>HESTIA FAMILIA</h1>
+        <p>
+            Under the Banner, We are United
+        </p>
 
-    <h2>Under the Banner, We are United</h2>
+        <p class="footer-credit">
+            Developed by salt
+        </p>
 
-    <p>
-        United through loyalty, honor, and the bonds we forge together.
-        Every member strengthens the Familia.
-    </p>
+    </footer>
 
-   <a class="button" href="https://discord.gg/Nd5yAmPu9a" target="_blank">
-    Join Discord
-</a>
+    <!-- Back to top -->
 
-<p class="developer">
-    Developed by salt
-</p>
+    <button
+        id="back-to-top"
+        class="back-to-top"
+        type="button"
+        aria-label="Return to the top"
+    >
+        ↑
+    </button>
 
-</section>
-    
-<script src="script.js"></script>
+    <!-- Scripts -->
+
+    <script src="script.js?v=200"></script>
+    <script src="home.js?v=200"></script>
 
 </body>
+
 </html>
