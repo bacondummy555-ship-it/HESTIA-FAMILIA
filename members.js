@@ -9,6 +9,17 @@ const memberGrid =
 const membersStatus =
     document.getElementById("members-status");
 
+const memberSearch =
+    document.getElementById("member-search");
+
+const memberSearchClear =
+    document.getElementById("member-search-clear");
+
+const memberSearchResult =
+    document.getElementById("member-search-result");
+
+let allMembers = [];
+
 async function loadDiscordMembers() {
     if (!memberGrid || !membersStatus) {
         console.error("Members page elements are missing.");
@@ -27,6 +38,7 @@ async function loadDiscordMembers() {
                 method: "GET",
                 mode: "cors",
                 cache: "no-store",
+
                 headers: {
                     Accept: "application/json"
                 }
@@ -51,22 +63,14 @@ async function loadDiscordMembers() {
             );
         }
 
-        const groups =
-            groupMembersByRole(data.members);
+        allMembers = data.members;
 
-        const fragment =
-            document.createDocumentFragment();
-
-        groups.forEach((group) => {
-            fragment.appendChild(
-                createRoleSection(group)
-            );
-        });
-
-        memberGrid.appendChild(fragment);
+        renderMembers(allMembers);
 
         membersStatus.textContent =
-            `${data.members.length} members united under the banner`;
+            `${allMembers.length} members united under the banner`;
+
+        enableMemberSearch();
 
     } catch (error) {
         console.error("Member loading error:", error);
@@ -82,25 +86,146 @@ async function loadDiscordMembers() {
     }
 }
 
+function enableMemberSearch() {
+    if (
+        !memberSearch ||
+        !memberSearchClear ||
+        !memberSearchResult
+    ) {
+        return;
+    }
+
+    memberSearch.addEventListener(
+        "input",
+        handleMemberSearch
+    );
+
+    memberSearchClear.addEventListener(
+        "click",
+        clearMemberSearch
+    );
+}
+
+function handleMemberSearch() {
+    const query =
+        normalizeSearchText(memberSearch.value);
+
+    memberSearchClear.hidden =
+        query.length === 0;
+
+    if (!query) {
+        renderMembers(allMembers);
+
+        memberSearchResult.textContent = "";
+
+        return;
+    }
+
+    const filteredMembers =
+        allMembers.filter((member) => {
+            const displayName =
+                normalizeSearchText(
+                    member.displayName
+                );
+
+            const username =
+                normalizeSearchText(
+                    member.username
+                );
+
+            const roleName =
+                normalizeSearchText(
+                    member.highestRole?.name
+                );
+
+            return (
+                displayName.includes(query) ||
+                username.includes(query) ||
+                roleName.includes(query)
+            );
+        });
+
+    renderMembers(filteredMembers);
+
+    memberSearchResult.textContent =
+        filteredMembers.length === 1
+            ? "1 member found"
+            : `${filteredMembers.length} members found`;
+}
+
+function clearMemberSearch() {
+    memberSearch.value = "";
+
+    memberSearchClear.hidden = true;
+
+    memberSearchResult.textContent = "";
+
+    renderMembers(allMembers);
+
+    memberSearch.focus();
+}
+
+function renderMembers(members) {
+    memberGrid.replaceChildren();
+
+    if (members.length === 0) {
+        const message =
+            document.createElement("div");
+
+        message.className =
+            "search-empty-message";
+
+        message.textContent =
+            "No Familia member matches your search.";
+
+        memberGrid.appendChild(message);
+
+        return;
+    }
+
+    const groups =
+        groupMembersByRole(members);
+
+    const fragment =
+        document.createDocumentFragment();
+
+    groups.forEach((group) => {
+        fragment.appendChild(
+            createRoleSection(group)
+        );
+    });
+
+    memberGrid.appendChild(fragment);
+}
+
 function groupMembersByRole(members) {
     const groups = new Map();
 
     members.forEach((member) => {
         const role =
             member.highestRole || {
+                id: null,
                 name: "Member",
                 position: 0,
                 color: 0
             };
 
         const roleKey =
-            role.id || role.name || "Member";
+            role.id ||
+            role.name ||
+            "Member";
 
         if (!groups.has(roleKey)) {
             groups.set(roleKey, {
-                roleName: role.name || "Member",
-                rolePosition: Number(role.position || 0),
-                roleColor: Number(role.color || 0),
+                roleName:
+                    role.name || "Member",
+
+                rolePosition:
+                    Number(role.position || 0),
+
+                roleColor:
+                    Number(role.color || 0),
+
                 members: []
             });
         }
@@ -109,9 +234,12 @@ function groupMembersByRole(members) {
     });
 
     return Array.from(groups.values())
-        .sort((first, second) =>
-            second.rolePosition - first.rolePosition
-        );
+        .sort((first, second) => {
+            return (
+                second.rolePosition -
+                first.rolePosition
+            );
+        });
 }
 
 function createRoleSection(group) {
@@ -135,7 +263,9 @@ function createRoleSection(group) {
 
     if (group.roleColor > 0) {
         title.style.color =
-            decimalColorToHex(group.roleColor);
+            decimalColorToHex(
+                group.roleColor
+            );
     }
 
     const count =
@@ -148,29 +278,45 @@ function createRoleSection(group) {
                 : "members"
         }`;
 
-    heading.append(title, count);
-
     const grid =
         document.createElement("div");
 
     grid.className =
-        "member-grid role-member-grid";
+        "role-member-grid";
 
     group.members
-        .sort((first, second) =>
-            String(first.displayName).localeCompare(
-                String(second.displayName),
+        .sort((first, second) => {
+            return String(
+                first.displayName ||
+                first.username ||
+                ""
+            ).localeCompare(
+                String(
+                    second.displayName ||
+                    second.username ||
+                    ""
+                ),
                 undefined,
-                { sensitivity: "base" }
-            )
-        )
+                {
+                    sensitivity: "base"
+                }
+            );
+        })
         .forEach((member) => {
             grid.appendChild(
                 createMemberCard(member)
             );
         });
 
-    section.append(heading, grid);
+    heading.append(
+        title,
+        count
+    );
+
+    section.append(
+        heading,
+        grid
+    );
 
     return section;
 }
@@ -222,6 +368,7 @@ function createMemberCard(member) {
 
     avatar.onerror = () => {
         avatar.onerror = null;
+
         avatar.src =
             "https://cdn.discordapp.com/embed/avatars/0.png";
     };
@@ -237,7 +384,9 @@ function createMemberCard(member) {
         "Member";
 
     if (
-        Number(member.highestRole?.color || 0) > 0
+        Number(
+            member.highestRole?.color || 0
+        ) > 0
     ) {
         rank.style.color =
             decimalColorToHex(
@@ -249,6 +398,9 @@ function createMemberCard(member) {
         document.createElement("h3");
 
     name.textContent =
+        displayName;
+
+    name.title =
         displayName;
 
     const usernameElement =
@@ -270,6 +422,12 @@ function createMemberCard(member) {
     );
 
     return card;
+}
+
+function normalizeSearchText(value) {
+    return String(value || "")
+        .trim()
+        .toLowerCase();
 }
 
 function decimalColorToHex(decimalColor) {
@@ -300,7 +458,10 @@ function showError(messageText) {
     message.textContent =
         messageText;
 
-    box.append(title, message);
+    box.append(
+        title,
+        message
+    );
 
     memberGrid.replaceChildren(box);
 }
