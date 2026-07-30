@@ -289,3 +289,65 @@ function animateNumber(element) {
 }
 
 loadHomepageStatistics();
+
+const VISITOR_API_URL =
+    "https://hestia-visitor-counter.bacondummy555.workers.dev";
+
+async function loadVisitorCounter() {
+    const visitorElement =
+        document.getElementById("stat-visitors");
+
+    if (!visitorElement) {
+        return;
+    }
+
+    const storageKey =
+        "hestia-last-visit-date";
+
+    const today =
+        new Date().toISOString().slice(0, 10);
+
+    const alreadyCountedToday =
+        localStorage.getItem(storageKey) === today;
+
+    const endpoint =
+        alreadyCountedToday
+            ? "/count"
+            : "/visit";
+
+    const method =
+        alreadyCountedToday
+            ? "GET"
+            : "POST";
+
+    try {
+        const response = await fetch(
+            `${VISITOR_API_URL}${endpoint}`,
+            {
+                method,
+                cache: "no-store"
+            }
+        );
+
+        const data = await response.json();
+
+        visitorElement.textContent =
+            Number(data.visitors || 0).toLocaleString();
+
+        if (!alreadyCountedToday) {
+            localStorage.setItem(
+                storageKey,
+                today
+            );
+        }
+    } catch (error) {
+        console.error(
+            "Visitor counter error:",
+            error
+        );
+
+        visitorElement.textContent = "—";
+    }
+}
+
+loadVisitorCounter();
