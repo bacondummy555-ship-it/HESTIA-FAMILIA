@@ -12,9 +12,11 @@
 
     <title>Members | HESTIA FAMILIA</title>
 
+    <!-- Favicon -->
     <link rel="icon" href="webicon.png" sizes="any">
-<link rel="icon" type="image/png" href="webicon.png">
+    <link rel="icon" type="image/png" href="webicon.png">
 
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
     <link
@@ -28,8 +30,9 @@
         rel="stylesheet"
     >
 
-    <link rel="stylesheet" href="style.css?v=10">
-    <link rel="stylesheet" href="members.css?v=10">
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css?v=110">
+    <link rel="stylesheet" href="members.css?v=110">
 
 </head>
 
@@ -116,6 +119,8 @@
 
     <main class="members-main">
 
+        <!-- Page heading -->
+
         <section class="members-heading">
 
             <span class="heading-symbol">
@@ -153,10 +158,47 @@
                 Gathering the Familia...
             </p>
 
+            <!-- Member search -->
+
+            <div class="member-search-wrapper">
+
+                <span class="member-search-icon">
+                    ⌕
+                </span>
+
+                <input
+                    id="member-search"
+                    class="member-search"
+                    type="search"
+                    placeholder="Search a member..."
+                    autocomplete="off"
+                    aria-label="Search members by Discord name"
+                >
+
+                <button
+                    id="member-search-clear"
+                    class="member-search-clear"
+                    type="button"
+                    aria-label="Clear member search"
+                    hidden
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <p
+                id="member-search-result"
+                class="member-search-result"
+                aria-live="polite"
+            ></p>
+
+            <!-- Discord role groups and member cards appear here -->
+
             <div
-    id="member-grid"
-    class="role-groups-container"
-></div>
+                id="member-grid"
+                class="role-groups-container"
+            ></div>
 
         </section>
 
@@ -166,8 +208,10 @@
 
     </main>
 
-    <script src="script.js?v=60"></script>
-<script src="members.js?v=60"></script>
+    <!-- Scripts -->
+
+    <script src="script.js?v=110"></script>
+    <script src="members.js?v=110"></script>
 
 </body>
 
