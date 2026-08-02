@@ -18,7 +18,11 @@ const memberSearchClear =
 const memberSearchResult =
     document.getElementById("member-search-result");
 
+const memberRoleFilters =
+    document.getElementById("member-role-filters");
+
 let allMembers = [];
+let activeRoleFilter = "all";
 
 async function loadDiscordMembers() {
     if (!memberGrid || !membersStatus) {
@@ -65,7 +69,8 @@ async function loadDiscordMembers() {
 
         allMembers = data.members;
 
-        renderMembers(allMembers);
+        buildRoleFilters(allMembers);
+        renderFilteredMembers();
 
         membersStatus.textContent =
             `${allMembers.length} members united under the banner`;
@@ -113,16 +118,157 @@ function handleMemberSearch() {
     memberSearchClear.hidden =
         query.length === 0;
 
-    if (!query) {
-        renderMembers(allMembers);
+    renderFilteredMembers();
+}
 
-        memberSearchResult.textContent = "";
+function clearMemberSearch() {
+    memberSearch.value = "";
 
+    memberSearchClear.hidden = true;
+
+    renderFilteredMembers();
+
+    memberSearch.focus();
+}
+
+function buildRoleFilters(members) {
+    if (!memberRoleFilters) {
         return;
     }
 
+    const roleMap = new Map();
+
+    members.forEach((member) => {
+        const role =
+            member.highestRole || {
+                id: null,
+                name: "Member",
+                position: 0
+            };
+
+        const roleName =
+            String(role.name || "Member").trim();
+
+        const roleKey =
+            String(role.id || roleName);
+
+        if (!roleMap.has(roleKey)) {
+            roleMap.set(roleKey, {
+                id: roleKey,
+                name: roleName,
+                position:
+                    Number(role.position || 0)
+            });
+        }
+    });
+
+    const roles =
+        Array.from(roleMap.values())
+            .sort((first, second) => {
+                return (
+                    second.position -
+                    first.position
+                );
+            });
+
+    memberRoleFilters.replaceChildren();
+
+    memberRoleFilters.appendChild(
+        createRoleFilterButton(
+            "all",
+            "All"
+        )
+    );
+
+    roles.forEach((role) => {
+        memberRoleFilters.appendChild(
+            createRoleFilterButton(
+                role.id,
+                role.name
+            )
+        );
+    });
+}
+
+function createRoleFilterButton(roleId, roleName) {
+    const button =
+        document.createElement("button");
+
+    button.className =
+        "member-role-filter";
+
+    button.type =
+        "button";
+
+    button.dataset.role =
+        roleId;
+
+    button.textContent =
+        roleName;
+
+    if (roleId === activeRoleFilter) {
+        button.classList.add("active");
+    }
+
+    button.addEventListener(
+        "click",
+        () => {
+            activeRoleFilter =
+                roleId;
+
+            updateActiveFilterButton();
+
+            renderFilteredMembers();
+        }
+    );
+
+    return button;
+}
+
+function updateActiveFilterButton() {
+    if (!memberRoleFilters) {
+        return;
+    }
+
+    const buttons =
+        memberRoleFilters.querySelectorAll(
+            ".member-role-filter"
+        );
+
+    buttons.forEach((button) => {
+        button.classList.toggle(
+            "active",
+            button.dataset.role ===
+                activeRoleFilter
+        );
+    });
+}
+
+function renderFilteredMembers() {
+    const query =
+        normalizeSearchText(
+            memberSearch?.value
+        );
+
     const filteredMembers =
         allMembers.filter((member) => {
+            const role =
+                member.highestRole || {
+                    id: null,
+                    name: "Member"
+                };
+
+            const roleKey =
+                String(
+                    role.id ||
+                    role.name ||
+                    "Member"
+                );
+
+            const matchesRole =
+                activeRoleFilter === "all" ||
+                roleKey === activeRoleFilter;
+
             const displayName =
                 normalizeSearchText(
                     member.displayName
@@ -135,34 +281,39 @@ function handleMemberSearch() {
 
             const roleName =
                 normalizeSearchText(
-                    member.highestRole?.name
+                    role.name
                 );
 
-            return (
+            const matchesSearch =
+                !query ||
                 displayName.includes(query) ||
                 username.includes(query) ||
-                roleName.includes(query)
+                roleName.includes(query);
+
+            return (
+                matchesRole &&
+                matchesSearch
             );
         });
 
     renderMembers(filteredMembers);
 
+    if (!memberSearchResult) {
+        return;
+    }
+
+    if (
+        !query &&
+        activeRoleFilter === "all"
+    ) {
+        memberSearchResult.textContent = "";
+        return;
+    }
+
     memberSearchResult.textContent =
         filteredMembers.length === 1
             ? "1 member found"
             : `${filteredMembers.length} members found`;
-}
-
-function clearMemberSearch() {
-    memberSearch.value = "";
-
-    memberSearchClear.hidden = true;
-
-    memberSearchResult.textContent = "";
-
-    renderMembers(allMembers);
-
-    memberSearch.focus();
 }
 
 function renderMembers(members) {
@@ -176,7 +327,7 @@ function renderMembers(members) {
             "search-empty-message";
 
         message.textContent =
-            "No Familia member matches your search.";
+            "No Familia member matches the selected filter.";
 
         memberGrid.appendChild(message);
 
