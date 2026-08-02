@@ -12,29 +12,29 @@ const MEMBERS_API_URL =
 
    Add badges using each member's Discord user ID.
 
-   Example:
-   "123456789012345678": [
-       "developer",
-       "booster",
-       "elite",
-       "active"
-   ]
+   Always keep the Discord ID and badge names inside
+   quotation marks.
 ===================================================== */
 
 const MEMBER_BADGES = {
+    // SALT
+    "1428238972471218230": [
+        "founder",
+        "developer",
+        "booster",
+        "veteran",
+        "active"
+    ]
 
-   // SALT
-   "1428238972471218230": [
-      "developer",
-      "booster",
-      "elite",
-      "veteran",
-      "pioneer",
-      "contributor",
-      "highCouncil",
-      "overseer",
-      "active"
-      ]
+    /*
+    Add another member like this:
+
+    ,"123456789012345678": [
+        "elite",
+        "pioneer",
+        "contributor"
+    ]
+    */
 };
 
 /* =====================================================
@@ -165,7 +165,7 @@ let activeRoleFilter = "all";
 let searchEventsEnabled = false;
 
 /* =====================================================
-   LOAD DISCORD MEMBERS
+   LOAD MEMBERS
 ===================================================== */
 
 async function loadDiscordMembers() {
@@ -183,19 +183,18 @@ async function loadDiscordMembers() {
 
         memberGrid.replaceChildren();
 
-        const response =
-            await fetch(
-                `${MEMBERS_API_URL}?time=${Date.now()}`,
-                {
-                    method: "GET",
-                    mode: "cors",
-                    cache: "no-store",
+        const response = await fetch(
+            `${MEMBERS_API_URL}?time=${Date.now()}`,
+            {
+                method: "GET",
+                mode: "cors",
+                cache: "no-store",
 
-                    headers: {
-                        Accept: "application/json"
-                    }
+                headers: {
+                    Accept: "application/json"
                 }
-            );
+            }
+        );
 
         const data =
             await response.json();
@@ -244,14 +243,13 @@ async function loadDiscordMembers() {
 }
 
 /* =====================================================
-   MEMBER SEARCH
+   SEARCH
 ===================================================== */
 
 function enableMemberSearch() {
     if (
         searchEventsEnabled ||
-        !memberSearch ||
-        !memberSearchClear
+        !memberSearch
     ) {
         return;
     }
@@ -261,7 +259,7 @@ function enableMemberSearch() {
         handleMemberSearch
     );
 
-    memberSearchClear.addEventListener(
+    memberSearchClear?.addEventListener(
         "click",
         clearMemberSearch
     );
@@ -300,7 +298,7 @@ function clearMemberSearch() {
 }
 
 /* =====================================================
-   ROLE FILTER BUTTONS
+   ROLE FILTERS
 ===================================================== */
 
 function buildRoleFilters(members) {
@@ -313,11 +311,7 @@ function buildRoleFilters(members) {
 
     members.forEach((member) => {
         const role =
-            member.highestRole || {
-                id: null,
-                name: "Member",
-                position: 0
-            };
+            getHighestRole(member);
 
         const roleName =
             String(
@@ -392,14 +386,10 @@ function createRoleFilterButton(
     button.textContent =
         roleName;
 
-    if (
-        String(roleId) ===
-        activeRoleFilter
-    ) {
-        button.classList.add(
-            "active"
-        );
-    }
+    button.classList.toggle(
+        "active",
+        String(roleId) === activeRoleFilter
+    );
 
     button.addEventListener(
         "click",
@@ -447,10 +437,7 @@ function renderFilteredMembers() {
     const filteredMembers =
         allMembers.filter((member) => {
             const role =
-                member.highestRole || {
-                    id: null,
-                    name: "Member"
-                };
+                getHighestRole(member);
 
             const roleKey =
                 String(
@@ -572,7 +559,7 @@ function renderMembers(members) {
 }
 
 /* =====================================================
-   GROUP MEMBERS BY HIGHEST ROLE
+   GROUP MEMBERS BY ROLE
 ===================================================== */
 
 function groupMembersByRole(members) {
@@ -581,12 +568,7 @@ function groupMembersByRole(members) {
 
     members.forEach((member) => {
         const role =
-            member.highestRole || {
-                id: null,
-                name: "Member",
-                position: 0,
-                color: 0
-            };
+            getHighestRole(member);
 
         const roleKey =
             String(
@@ -680,29 +662,34 @@ function createRoleSection(group) {
     grid.className =
         "role-member-grid";
 
-    group.members
-        .sort((first, second) => {
-            return String(
-                first.displayName ||
-                first.username ||
-                ""
-            ).localeCompare(
-                String(
+    const sortedMembers =
+        [...group.members].sort(
+            (first, second) => {
+                const firstName =
+                    first.displayName ||
+                    first.username ||
+                    "";
+
+                const secondName =
                     second.displayName ||
                     second.username ||
-                    ""
-                ),
-                undefined,
-                {
-                    sensitivity: "base"
-                }
-            );
-        })
-        .forEach((member) => {
-            grid.appendChild(
-                createMemberCard(member)
-            );
-        });
+                    "";
+
+                return firstName.localeCompare(
+                    secondName,
+                    undefined,
+                    {
+                        sensitivity: "base"
+                    }
+                );
+            }
+        );
+
+    sortedMembers.forEach((member) => {
+        grid.appendChild(
+            createMemberCard(member)
+        );
+    });
 
     heading.append(
         title,
@@ -718,7 +705,7 @@ function createRoleSection(group) {
 }
 
 /* =====================================================
-   MEMBER BADGES
+   BADGES
 ===================================================== */
 
 function getMemberBadgeKeys(member) {
@@ -726,10 +713,11 @@ function getMemberBadgeKeys(member) {
         return [];
     }
 
-    return Array.isArray(
-        MEMBER_BADGES[member.id]
-    )
-        ? MEMBER_BADGES[member.id]
+    const badgeKeys =
+        MEMBER_BADGES[String(member.id)];
+
+    return Array.isArray(badgeKeys)
+        ? badgeKeys
         : [];
 }
 
@@ -747,59 +735,66 @@ function createMemberBadges(member) {
     container.className =
         "member-badges";
 
-    badgeKeys.forEach((badgeKey) => {
-        const badge =
-            BADGE_DEFINITIONS[badgeKey];
+    /*
+    Show only five badges to prevent
+    the card from becoming overcrowded.
+    */
 
-        if (!badge) {
-            console.warn(
-                `Unknown badge: ${badgeKey}`
+    badgeKeys
+        .slice(0, 5)
+        .forEach((badgeKey) => {
+            const badge =
+                BADGE_DEFINITIONS[badgeKey];
+
+            if (!badge) {
+                console.warn(
+                    `Unknown badge: ${badgeKey}`
+                );
+
+                return;
+            }
+
+            const badgeElement =
+                document.createElement("span");
+
+            badgeElement.className =
+                `member-badge member-badge-${badge.className}`;
+
+            badgeElement.title =
+                `${badge.label} — ${badge.description}`;
+
+            badgeElement.setAttribute(
+                "aria-label",
+                `${badge.label}: ${badge.description}`
             );
 
-            return;
-        }
+            const icon =
+                document.createElement("span");
 
-        const element =
-            document.createElement("span");
+            icon.className =
+                "member-badge-icon";
 
-        element.className =
-            `member-badge member-badge-${badge.className}`;
+            icon.textContent =
+                badge.icon;
 
-        element.title =
-            badge.description;
+            const tooltip =
+                document.createElement("span");
 
-        element.setAttribute(
-            "aria-label",
-            `${badge.label}: ${badge.description}`
-        );
+            tooltip.className =
+                "member-badge-tooltip";
 
-        const icon =
-            document.createElement("span");
+            tooltip.textContent =
+                badge.label;
 
-        icon.className =
-            "member-badge-icon";
+            badgeElement.append(
+                icon,
+                tooltip
+            );
 
-        icon.textContent =
-            badge.icon;
-
-        const label =
-            document.createElement("span");
-
-        label.className =
-            "member-badge-label";
-
-        label.textContent =
-            badge.label;
-
-        element.append(
-            icon,
-            label
-        );
-
-        container.appendChild(
-            element
-        );
-    });
+            container.appendChild(
+                badgeElement
+            );
+        });
 
     return container.children.length > 0
         ? container
@@ -820,6 +815,10 @@ function createMemberCard(member) {
         member.username ||
         "unknown";
 
+    const profileUrl =
+        member.profileUrl ||
+        `https://discord.com/users/${member.id}`;
+
     const card =
         document.createElement("a");
 
@@ -827,8 +826,7 @@ function createMemberCard(member) {
         "member-card";
 
     card.href =
-        member.profileUrl ||
-        `https://discord.com/users/${member.id}`;
+        profileUrl;
 
     card.target =
         "_blank";
@@ -862,6 +860,9 @@ function createMemberCard(member) {
             "https://cdn.discordapp.com/embed/avatars/0.png";
     };
 
+    const role =
+        getHighestRole(member);
+
     const rank =
         document.createElement("p");
 
@@ -869,12 +870,12 @@ function createMemberCard(member) {
         "member-rank";
 
     rank.textContent =
-        member.highestRole?.name ||
+        role.name ||
         "Member";
 
     const roleColor =
         Number(
-            member.highestRole?.color || 0
+            role.color || 0
         );
 
     if (roleColor > 0) {
@@ -929,19 +930,27 @@ function createMemberCard(member) {
 }
 
 /* =====================================================
-   ROLE NAME HELPERS
+   HELPERS
 ===================================================== */
+
+function getHighestRole(member) {
+    return member.highestRole || {
+        id: null,
+        name: "Member",
+        position: 0,
+        color: 0
+    };
+}
 
 function getMemberRoleNames(member) {
     if (
         Array.isArray(member.allRoles) &&
         member.allRoles.length > 0
     ) {
-        return member.allRoles.map(
-            (role) =>
-                normalizeSearchText(
-                    role?.name
-                )
+        return member.allRoles.map((role) =>
+            normalizeSearchText(
+                role?.name
+            )
         );
     }
 
