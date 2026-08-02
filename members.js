@@ -23,10 +23,11 @@ const MEMBERS_API_URL =
 
 const MEMBER_BADGES = {
 
+   // SALT
    "1428238972471218230": [
       "developer",
       "booster",
-      "elite"
+      "elite",
       "veteran",
       "pioneer",
       "contributor",
@@ -34,25 +35,6 @@ const MEMBER_BADGES = {
       "overseer",
       "active"
       ]
-    /*
-    Replace these examples with real Discord user IDs.
-
-    "1428238972471218230": [
-        "developer",
-        "booster",
-        "veteran",
-        "pioneer",
-        "contributor"
-        "highCouncil",
-        "overseer",
-        "active"
-    ],
-
-    "PASTE_ADMIN_KAI_ID_HERE": [
-        "veteran",
-        "booster"
-    ]
-    */
 };
 
 /* =====================================================
