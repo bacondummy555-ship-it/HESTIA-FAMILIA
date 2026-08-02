@@ -134,8 +134,8 @@ async function loadHomepageStatistics() {
             data.members;
 
         const counts = {
-            leadership: 0,
-            admins: 0,
+            leaders: 0,
+            high_council: 0,
             staff: 0
         };
 
@@ -155,7 +155,7 @@ async function loadHomepageStatistics() {
                 counts.leadership += 1;
             }
 
-            if (roleName.includes("admin")) {
+            if (roleName.includes("high council")) {
                 counts.admins += 1;
             }
 
