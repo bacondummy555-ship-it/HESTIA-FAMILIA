@@ -11,9 +11,6 @@ const MEMBERS_API_URL =
    MANUAL MEMBER BADGES
 
    Add badges using each member's Discord user ID.
-
-   Always keep the Discord ID and badge names inside
-   quotation marks.
 ===================================================== */
 
 const MEMBER_BADGES = {
@@ -764,6 +761,8 @@ function createMemberBadges(member) {
                 `${badge.label}: ${badge.description}`
             );
 
+            badgeElement.tabIndex = 0;
+
             const icon =
                 document.createElement("span");
 
@@ -804,7 +803,8 @@ function createMemberBadges(member) {
 function createAvatarDecoration(member) {
     const decorationUrl =
         String(
-            member.avatarDecorationUrl || ""
+            member?.avatarDecorationUrl ||
+            ""
         ).trim();
 
     if (!decorationUrl) {
@@ -837,9 +837,30 @@ function createAvatarDecoration(member) {
         "true"
     );
 
-    decoration.onerror = () => {
-        decoration.remove();
-    };
+    decoration.addEventListener(
+        "load",
+        () => {
+            decoration.classList.add(
+                "loaded"
+            );
+        }
+    );
+
+    decoration.addEventListener(
+        "error",
+        () => {
+            const avatarContainer =
+                decoration.closest(
+                    ".member-avatar"
+                );
+
+            avatarContainer?.classList.remove(
+                "has-decoration"
+            );
+
+            decoration.remove();
+        }
+    );
 
     return decoration;
 }
@@ -858,9 +879,14 @@ function createMemberCard(member) {
         member.username ||
         "unknown";
 
+    const memberId =
+        String(
+            member.id || ""
+        );
+
     const profileUrl =
         member.profileUrl ||
-        `https://discord.com/users/${member.id}`;
+        `https://discord.com/users/${memberId}`;
 
     const card =
         document.createElement("a");
@@ -882,12 +908,6 @@ function createMemberCard(member) {
 
     avatarContainer.className =
         "member-avatar";
-
-    if (member.avatarDecorationUrl) {
-        avatarContainer.classList.add(
-            "has-decoration"
-        );
-    }
 
     const avatar =
         document.createElement("img");
@@ -911,15 +931,35 @@ function createMemberCard(member) {
     avatar.draggable =
         false;
 
-    avatar.onerror = () => {
-        avatar.onerror = null;
-
-        avatar.src =
-            "https://cdn.discordapp.com/embed/avatars/0.png";
-    };
+    avatar.addEventListener(
+        "error",
+        () => {
+            avatar.src =
+                "https://cdn.discordapp.com/embed/avatars/0.png";
+        },
+        {
+            once: true
+        }
+    );
 
     const avatarDecoration =
-        createAvatarDecoration(member);
+        createAvatarDecoration(
+            member
+        );
+
+    avatarContainer.appendChild(
+        avatar
+    );
+
+    if (avatarDecoration) {
+        avatarContainer.classList.add(
+            "has-decoration"
+        );
+
+        avatarContainer.appendChild(
+            avatarDecoration
+        );
+    }
 
     const role =
         getHighestRole(member);
@@ -967,16 +1007,6 @@ function createMemberCard(member) {
     usernameElement.textContent =
         `@${username}`;
 
-    avatarContainer.appendChild(
-        avatar
-    );
-
-    if (avatarDecoration) {
-        avatarContainer.appendChild(
-            avatarDecoration
-        );
-    }
-
     card.append(
         avatarContainer,
         rank,
@@ -1001,7 +1031,7 @@ function createMemberCard(member) {
 ===================================================== */
 
 function getHighestRole(member) {
-    return member.highestRole || {
+    return member?.highestRole || {
         id: null,
         name: "Member",
         position: 0,
@@ -1011,7 +1041,7 @@ function getHighestRole(member) {
 
 function getMemberRoleNames(member) {
     if (
-        Array.isArray(member.allRoles) &&
+        Array.isArray(member?.allRoles) &&
         member.allRoles.length > 0
     ) {
         return member.allRoles.map((role) =>
@@ -1023,7 +1053,7 @@ function getMemberRoleNames(member) {
 
     return [
         normalizeSearchText(
-            member.highestRole?.name
+            member?.highestRole?.name
         )
     ];
 }
@@ -1038,7 +1068,10 @@ function decimalColorToHex(decimalColor) {
     const safeColor =
         Number(decimalColor);
 
-    if (!Number.isFinite(safeColor)) {
+    if (
+        !Number.isFinite(safeColor) ||
+        safeColor <= 0
+    ) {
         return "#d4af37";
     }
 
