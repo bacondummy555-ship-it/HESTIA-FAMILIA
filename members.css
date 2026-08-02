@@ -512,13 +512,10 @@ body.members-page {
     align-items: center;
 
     padding:
-        32px
-        20px;
+        36px
+        20px
+        32px;
 
-    /*
-    Visible overflow allows badge tooltips to appear
-    outside the card without being cut off.
-    */
     overflow: visible;
 
     border:
@@ -630,12 +627,12 @@ body.members-page {
 }
 
 /* =====================================================
-   MEMBER AVATAR
+   MEMBER AVATAR AND DISCORD DECORATION
 ===================================================== */
 
 .member-avatar {
     position: relative;
-    z-index: 2;
+    z-index: 4;
 
     width: 125px;
     height: 125px;
@@ -646,18 +643,39 @@ body.members-page {
 
     flex-shrink: 0;
 
-    padding: 4px;
-
-    overflow: hidden;
-
-    border:
-        1px solid
-        rgba(212, 175, 55, 0.6);
+    /*
+    The decoration extends outside the circular avatar.
+    */
+    overflow: visible;
 
     border-radius: 50%;
 
     background:
         rgba(4, 6, 9, 0.95);
+
+    isolation: isolate;
+}
+
+/* Standard Discord avatar */
+
+.member-avatar-image {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    border:
+        2px solid
+        rgba(212, 175, 55, 0.65);
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    background: #050608;
 
     box-shadow:
         0 0 22px
@@ -665,17 +683,80 @@ body.members-page {
 
         inset 0 0 18px
         rgba(212, 175, 55, 0.06);
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
 }
 
-.member-avatar img {
-    width: 100%;
-    height: 100%;
+.member-card:hover .member-avatar-image {
+    border-color:
+        rgba(232, 199, 91, 0.9);
+
+    box-shadow:
+        0 0 28px
+        rgba(212, 175, 55, 0.22),
+
+        inset 0 0 18px
+        rgba(212, 175, 55, 0.08);
+}
+
+/*
+Discord decorations are normally larger than the avatar.
+The API provides animated GIF or static PNG decoration URLs.
+*/
+
+.member-avatar-decoration {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+    z-index: 3;
+
+    width: 142%;
+    height: 142%;
+
+    max-width: none;
 
     display: block;
 
-    border-radius: 50%;
+    transform:
+        translate(-50%, -50%);
 
-    object-fit: cover;
+    border: 0;
+    border-radius: 0;
+
+    object-fit: contain;
+
+    background: transparent;
+    box-shadow: none;
+
+    pointer-events: none;
+    user-select: none;
+}
+
+/*
+Do not show the website gold border underneath an equipped
+Discord decoration. This helps the Discord frame look accurate.
+*/
+
+.member-avatar.has-decoration
+.member-avatar-image {
+    border-color: transparent;
+
+    box-shadow:
+        0 0 15px
+        rgba(0, 0, 0, 0.28);
+}
+
+/*
+A subtle hover zoom affects both the avatar and decoration.
+*/
+
+.member-card:hover
+.member-avatar {
+    transform: scale(1.025);
 }
 
 /* =====================================================
@@ -689,7 +770,7 @@ body.members-page {
     width: 100%;
 
     margin:
-        22px
+        28px
         0
         0;
 
@@ -946,8 +1027,10 @@ body.members-page {
         transparent;
 }
 
-.member-badge:hover .member-badge-tooltip,
-.member-badge:focus-visible .member-badge-tooltip {
+.member-badge:hover
+.member-badge-tooltip,
+.member-badge:focus-visible
+.member-badge-tooltip {
     opacity: 1;
     visibility: visible;
 
@@ -1152,7 +1235,7 @@ body.members-page {
 /* More card room when badges exist */
 
 .member-card:has(.member-badges) {
-    min-height: 385px;
+    min-height: 400px;
 }
 
 /* =====================================================
@@ -1351,20 +1434,30 @@ header .brand::after {
     }
 
     .member-card {
-        min-height: 330px;
+        min-height: 345px;
 
         padding:
-            30px
-            18px;
+            34px
+            18px
+            30px;
     }
 
     .member-card:has(.member-badges) {
-        min-height: 365px;
+        min-height: 380px;
     }
 
     .member-avatar {
         width: 115px;
         height: 115px;
+    }
+
+    .member-avatar-decoration {
+        width: 142%;
+        height: 142%;
+    }
+
+    .member-rank {
+        margin-top: 26px;
     }
 
     .member-badges {
@@ -1392,5 +1485,26 @@ header .brand::after {
 
     .members-developer {
         margin-top: 50px;
+    }
+}
+
+/* =====================================================
+   REDUCED MOTION
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .member-card,
+    .member-avatar,
+    .member-avatar-image,
+    .member-badge,
+    .member-badge-tooltip,
+    .member-role-filter,
+    .member-search-clear {
+        transition: none !important;
+    }
+
+    .member-card:hover,
+    .member-badge:hover {
+        transform: none;
     }
 }
