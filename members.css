@@ -512,7 +512,7 @@ body.members-page {
     align-items: center;
 
     padding:
-        36px
+        38px
         20px
         32px;
 
@@ -641,11 +641,8 @@ body.members-page {
     justify-content: center;
     align-items: center;
 
-    flex-shrink: 0;
+    flex: 0 0 auto;
 
-    /*
-    The decoration extends outside the circular avatar.
-    */
     overflow: visible;
 
     border-radius: 50%;
@@ -654,9 +651,12 @@ body.members-page {
         rgba(4, 6, 9, 0.95);
 
     isolation: isolate;
+
+    transition:
+        transform 0.25s ease;
 }
 
-/* Standard Discord avatar */
+/* Normal Discord avatar */
 
 .member-avatar-image {
     position: relative;
@@ -686,8 +686,7 @@ body.members-page {
 
     transition:
         border-color 0.25s ease,
-        box-shadow 0.25s ease,
-        transform 0.25s ease;
+        box-shadow 0.25s ease;
 }
 
 .member-card:hover .member-avatar-image {
@@ -702,20 +701,17 @@ body.members-page {
         rgba(212, 175, 55, 0.08);
 }
 
-/*
-Discord decorations are normally larger than the avatar.
-The API provides animated GIF or static PNG decoration URLs.
-*/
+/* Discord avatar decoration */
 
 .member-avatar-decoration {
     position: absolute;
 
     top: 50%;
     left: 50%;
-    z-index: 3;
+    z-index: 5;
 
-    width: 142%;
-    height: 142%;
+    width: 145%;
+    height: 145%;
 
     max-width: none;
 
@@ -724,22 +720,31 @@ The API provides animated GIF or static PNG decoration URLs.
     transform:
         translate(-50%, -50%);
 
-    border: 0;
-    border-radius: 0;
+    border: 0 !important;
+    border-radius: 0 !important;
 
     object-fit: contain;
 
-    background: transparent;
-    box-shadow: none;
+    background: transparent !important;
+
+    box-shadow: none !important;
+
+    opacity: 0;
 
     pointer-events: none;
     user-select: none;
+
+    transition:
+        opacity 0.2s ease;
 }
 
-/*
-Do not show the website gold border underneath an equipped
-Discord decoration. This helps the Discord frame look accurate.
-*/
+/* Decoration becomes visible after loading */
+
+.member-avatar-decoration.loaded {
+    opacity: 1;
+}
+
+/* Hide normal gold ring when Discord decoration exists */
 
 .member-avatar.has-decoration
 .member-avatar-image {
@@ -750,13 +755,9 @@ Discord decoration. This helps the Discord frame look accurate.
         rgba(0, 0, 0, 0.28);
 }
 
-/*
-A subtle hover zoom affects both the avatar and decoration.
-*/
-
 .member-card:hover
 .member-avatar {
-    transform: scale(1.025);
+    transform: scale(1.03);
 }
 
 /* =====================================================
@@ -770,7 +771,7 @@ A subtle hover zoom affects both the avatar and decoration.
     width: 100%;
 
     margin:
-        28px
+        30px
         0
         0;
 
@@ -839,10 +840,12 @@ A subtle hover zoom affects both the avatar and decoration.
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    transition: color 0.25s ease;
+    transition:
+        color 0.25s ease;
 }
 
-.member-card:hover .member-username {
+.member-card:hover
+.member-username {
     color: #d4af37;
 }
 
@@ -1232,7 +1235,7 @@ A subtle hover zoom affects both the avatar and decoration.
         );
 }
 
-/* More card room when badges exist */
+/* More room for cards containing badges */
 
 .member-card:has(.member-badges) {
     min-height: 400px;
@@ -1437,7 +1440,7 @@ header .brand::after {
         min-height: 345px;
 
         padding:
-            34px
+            36px
             18px
             30px;
     }
@@ -1452,12 +1455,12 @@ header .brand::after {
     }
 
     .member-avatar-decoration {
-        width: 142%;
-        height: 142%;
+        width: 145%;
+        height: 145%;
     }
 
     .member-rank {
-        margin-top: 26px;
+        margin-top: 28px;
     }
 
     .member-badges {
@@ -1496,6 +1499,7 @@ header .brand::after {
     .member-card,
     .member-avatar,
     .member-avatar-image,
+    .member-avatar-decoration,
     .member-badge,
     .member-badge-tooltip,
     .member-role-filter,
@@ -1504,7 +1508,8 @@ header .brand::after {
     }
 
     .member-card:hover,
-    .member-badge:hover {
+    .member-badge:hover,
+    .member-card:hover .member-avatar {
         transform: none;
     }
 }
