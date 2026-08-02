@@ -22,6 +22,16 @@ const MEMBERS_API_URL =
 ===================================================== */
 
 const MEMBER_BADGES = {
+
+   "1428238972471218230": [
+      "developer",
+      "booster",
+      "veteran",
+      "pioneer",
+      "contributor",
+      "highCouncil",
+      "overseer",
+      "active"
     /*
     Replace these examples with real Discord user IDs.
 
