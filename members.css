@@ -973,3 +973,381 @@ header .brand::after{
         font-size: 11px;
     }
 }
+
+/* =====================================================
+   HESTIA ICON BADGES
+===================================================== */
+
+.member-badges {
+    position: relative;
+    z-index: 5;
+
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 9px;
+
+    margin: 14px auto 8px;
+    padding: 0 12px;
+}
+
+/* Individual badge */
+
+.member-badge {
+    position: relative;
+
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    flex-shrink: 0;
+
+    border:
+        1px solid
+        rgba(212, 175, 55, 0.38);
+
+    border-radius: 50%;
+
+    color: #d4af37;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(212, 175, 55, 0.12),
+            rgba(5, 7, 10, 0.95)
+        );
+
+    box-shadow:
+        inset 0 0 12px
+        rgba(212, 175, 55, 0.05);
+
+    cursor: help;
+
+    transition:
+        transform 0.22s ease,
+        color 0.22s ease,
+        border-color 0.22s ease,
+        box-shadow 0.22s ease;
+}
+
+.member-badge:hover {
+    z-index: 20;
+
+    transform:
+        translateY(-4px)
+        scale(1.08);
+
+    color: #fff0ad;
+
+    border-color:
+        rgba(212, 175, 55, 0.9);
+
+    box-shadow:
+        0 8px 22px
+        rgba(0, 0, 0, 0.45),
+        0 0 16px
+        rgba(212, 175, 55, 0.2);
+}
+
+/* Badge symbol */
+
+.member-badge-icon {
+    display: block;
+
+    font-family:
+        "Cinzel",
+        serif;
+
+    font-size: 16px;
+    line-height: 1;
+
+    pointer-events: none;
+}
+
+/* Hover tooltip */
+
+.member-badge-tooltip {
+    position: absolute;
+
+    left: 50%;
+    bottom: calc(100% + 10px);
+
+    min-width: max-content;
+
+    padding: 7px 10px;
+
+    transform:
+        translateX(-50%)
+        translateY(5px);
+
+    border:
+        1px solid
+        rgba(212, 175, 55, 0.42);
+
+    border-radius: 6px;
+
+    color: #eee5c9;
+
+    font-family:
+        "Poppins",
+        sans-serif;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 0.8px;
+    line-height: 1;
+
+    text-transform: uppercase;
+
+    background:
+        rgba(5, 7, 10, 0.98);
+
+    box-shadow:
+        0 8px 22px
+        rgba(0, 0, 0, 0.5);
+
+    opacity: 0;
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease,
+        visibility 0.2s ease,
+        transform 0.2s ease;
+}
+
+.member-badge-tooltip::after {
+    content: "";
+
+    position: absolute;
+
+    top: 100%;
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    border-width:
+        5px
+        5px
+        0;
+
+    border-style:
+        solid;
+
+    border-color:
+        rgba(212, 175, 55, 0.42)
+        transparent
+        transparent;
+}
+
+.member-badge:hover
+.member-badge-tooltip {
+    opacity: 1;
+    visibility: visible;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+}
+
+/* =====================================================
+   BADGE COLORS
+===================================================== */
+
+/* Founder */
+
+.member-badge-founder {
+    color: #ffd76a;
+
+    border-color:
+        rgba(255, 215, 106, 0.7);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(113, 77, 9, 0.8),
+            rgba(12, 9, 3, 0.98)
+        );
+}
+
+/* Developer */
+
+.member-badge-developer {
+    color: #78d7ff;
+
+    border-color:
+        rgba(72, 184, 230, 0.65);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(15, 70, 94, 0.72),
+            rgba(3, 11, 16, 0.98)
+        );
+}
+
+/* Booster */
+
+.member-badge-booster {
+    color: #e8a1ff;
+
+    border-color:
+        rgba(211, 115, 241, 0.68);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(85, 33, 101, 0.74),
+            rgba(15, 5, 19, 0.98)
+        );
+}
+
+/* Elite */
+
+.member-badge-elite {
+    color: #ff81d4;
+
+    border-color:
+        rgba(229, 79, 180, 0.66);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(98, 20, 72, 0.7),
+            rgba(17, 4, 13, 0.98)
+        );
+}
+
+/* Veteran */
+
+.member-badge-veteran {
+    color: #caa7ff;
+
+    border-color:
+        rgba(163, 116, 225, 0.66);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(60, 37, 91, 0.72),
+            rgba(10, 6, 17, 0.98)
+        );
+}
+
+/* Pioneer */
+
+.member-badge-pioneer {
+    color: #ffc95c;
+
+    border-color:
+        rgba(230, 174, 57, 0.68);
+}
+
+/* Contributor */
+
+.member-badge-contributor {
+    color: #79e49d;
+
+    border-color:
+        rgba(67, 195, 108, 0.65);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(19, 78, 39, 0.72),
+            rgba(4, 15, 8, 0.98)
+        );
+}
+
+/* High Council */
+
+.member-badge-high-council {
+    color: #ff5757;
+
+    border-color:
+        rgba(255, 65, 65, 0.7);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(105, 15, 15, 0.72),
+            rgba(18, 4, 4, 0.98)
+        );
+}
+
+/* Overseer */
+
+.member-badge-overseer {
+    color: #f0be4b;
+
+    border-color:
+        rgba(212, 175, 55, 0.7);
+}
+
+/* Active */
+
+.member-badge-active {
+    color: #72e89c;
+
+    border-color:
+        rgba(73, 209, 119, 0.68);
+
+    box-shadow:
+        inset 0 0 12px
+        rgba(73, 209, 119, 0.07),
+        0 0 8px
+        rgba(73, 209, 119, 0.08);
+}
+
+/* Staff */
+
+.member-badge-staff {
+    color: #78bfff;
+
+    border-color:
+        rgba(64, 151, 229, 0.66);
+}
+
+/* =====================================================
+   CARD SPACE FOR BADGES
+===================================================== */
+
+.member-card:has(.member-badges) {
+    min-height: 405px;
+}
+
+/* =====================================================
+   MOBILE BADGES
+===================================================== */
+
+@media (max-width: 580px) {
+    .member-badges {
+        gap: 7px;
+
+        margin-top: 11px;
+        padding: 0 6px;
+    }
+
+    .member-badge {
+        width: 31px;
+        height: 31px;
+    }
+
+    .member-badge-icon {
+        font-size: 14px;
+    }
+
+    .member-card:has(.member-badges) {
+        min-height: 390px;
+    }
+}
