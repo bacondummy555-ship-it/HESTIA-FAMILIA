@@ -19,7 +19,7 @@ const MEMBERS_API_URL =
 const MEMBER_BADGES = {
     // SALT
     "1428238972471218230": [
-        "founder",
+        "contributor",
         "developer",
         "booster",
         "veteran",
