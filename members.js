@@ -1,7 +1,142 @@
 "use strict";
 
+/* =====================================================
+   API
+===================================================== */
+
 const MEMBERS_API_URL =
     "https://hestia-members-api.bacondummy555.workers.dev/members";
+
+/* =====================================================
+   MANUAL MEMBER BADGES
+
+   Add badges using each member's Discord user ID.
+
+   Example:
+   "123456789012345678": [
+       "founder",
+       "developer",
+       "active"
+   ]
+===================================================== */
+
+const MEMBER_BADGES = {
+    /*
+    Replace these examples with real Discord user IDs.
+
+    "PASTE_SALT_ID_HERE": [
+        "founder",
+        "developer",
+        "active"
+    ],
+
+    "PASTE_ADMIN_KAI_ID_HERE": [
+        "veteran",
+        "booster"
+    ]
+    */
+};
+
+/* =====================================================
+   AVAILABLE BADGES
+===================================================== */
+
+const BADGE_DEFINITIONS = {
+    founder: {
+        label: "Founder",
+        icon: "♛",
+        className: "founder",
+        description: "Founder of Hestia Familia"
+    },
+
+    developer: {
+        label: "Developer",
+        icon: "⌨",
+        className: "developer",
+        description: "Developer of the Hestia Familia website"
+    },
+
+    booster: {
+        label: "Booster",
+        icon: "◆",
+        className: "booster",
+        description: "Supports the Discord server through boosting"
+    },
+
+    veteran: {
+        label: "Veteran",
+        icon: "★",
+        className: "veteran",
+        description: "A long-standing Hestia Familia member"
+    },
+
+    pioneer: {
+        label: "Pioneer",
+        icon: "✦",
+        className: "pioneer",
+        description: "One of the early members of Hestia Familia"
+    },
+
+    champion: {
+        label: "Champion",
+        icon: "♜",
+        className: "champion",
+        description: "Winner of a Hestia Familia event"
+    },
+
+    contributor: {
+        label: "Contributor",
+        icon: "✚",
+        className: "contributor",
+        description: "Contributed to the growth of Hestia Familia"
+    },
+
+    active: {
+        label: "Active",
+        icon: "ϟ",
+        className: "active",
+        description: "An active member of the community"
+    },
+
+    elite: {
+        label: "Elite",
+        icon: "◆",
+        className: "elite",
+        description: "Recognized as an elite Hestia member"
+    },
+
+    creator: {
+        label: "Creator",
+        icon: "◉",
+        className: "creator",
+        description: "Creates content for Hestia Familia"
+    },
+
+    highCouncil: {
+        label: "High Council",
+        icon: "♔",
+        className: "high-council",
+        description: "Member of the Hestia High Council"
+    },
+
+    staff: {
+        label: "Staff",
+        icon: "⚔",
+        className: "staff",
+        description: "Hestia Familia staff member"
+    },
+
+    overseer: {
+        label: "Overseer",
+        icon: "◈",
+        className: "overseer",
+        description: "Overseer of Hestia Familia"
+    }
+};
+
+/* =====================================================
+   PAGE ELEMENTS
+===================================================== */
 
 const memberGrid =
     document.getElementById("member-grid");
@@ -21,12 +156,24 @@ const memberSearchResult =
 const memberRoleFilters =
     document.getElementById("member-role-filters");
 
+/* =====================================================
+   STATE
+===================================================== */
+
 let allMembers = [];
 let activeRoleFilter = "all";
+let searchEventsEnabled = false;
+
+/* =====================================================
+   LOAD DISCORD MEMBERS
+===================================================== */
 
 async function loadDiscordMembers() {
     if (!memberGrid || !membersStatus) {
-        console.error("Members page elements are missing.");
+        console.error(
+            "Members page elements are missing."
+        );
+
         return;
     }
 
@@ -36,20 +183,22 @@ async function loadDiscordMembers() {
 
         memberGrid.replaceChildren();
 
-        const response = await fetch(
-            `${MEMBERS_API_URL}?time=${Date.now()}`,
-            {
-                method: "GET",
-                mode: "cors",
-                cache: "no-store",
+        const response =
+            await fetch(
+                `${MEMBERS_API_URL}?time=${Date.now()}`,
+                {
+                    method: "GET",
+                    mode: "cors",
+                    cache: "no-store",
 
-                headers: {
-                    Accept: "application/json"
+                    headers: {
+                        Accept: "application/json"
+                    }
                 }
-            }
-        );
+            );
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
         if (!response.ok) {
             throw new Error(
@@ -67,18 +216,21 @@ async function loadDiscordMembers() {
             );
         }
 
-        allMembers = data.members;
+        allMembers =
+            data.members;
 
         buildRoleFilters(allMembers);
+        enableMemberSearch();
         renderFilteredMembers();
 
         membersStatus.textContent =
             `${allMembers.length} members united under the banner`;
 
-        enableMemberSearch();
-
     } catch (error) {
-        console.error("Member loading error:", error);
+        console.error(
+            "Member loading error:",
+            error
+        );
 
         membersStatus.textContent =
             "The Familia member list could not be loaded.";
@@ -91,11 +243,15 @@ async function loadDiscordMembers() {
     }
 }
 
+/* =====================================================
+   MEMBER SEARCH
+===================================================== */
+
 function enableMemberSearch() {
     if (
+        searchEventsEnabled ||
         !memberSearch ||
-        !memberSearchClear ||
-        !memberSearchResult
+        !memberSearchClear
     ) {
         return;
     }
@@ -109,34 +265,51 @@ function enableMemberSearch() {
         "click",
         clearMemberSearch
     );
+
+    searchEventsEnabled = true;
 }
 
 function handleMemberSearch() {
     const query =
-        normalizeSearchText(memberSearch.value);
+        normalizeSearchText(
+            memberSearch?.value
+        );
 
-    memberSearchClear.hidden =
-        query.length === 0;
+    if (memberSearchClear) {
+        memberSearchClear.hidden =
+            query.length === 0;
+    }
 
     renderFilteredMembers();
 }
 
 function clearMemberSearch() {
+    if (!memberSearch) {
+        return;
+    }
+
     memberSearch.value = "";
 
-    memberSearchClear.hidden = true;
+    if (memberSearchClear) {
+        memberSearchClear.hidden = true;
+    }
 
     renderFilteredMembers();
 
     memberSearch.focus();
 }
 
+/* =====================================================
+   ROLE FILTER BUTTONS
+===================================================== */
+
 function buildRoleFilters(members) {
     if (!memberRoleFilters) {
         return;
     }
 
-    const roleMap = new Map();
+    const roleMap =
+        new Map();
 
     members.forEach((member) => {
         const role =
@@ -147,29 +320,39 @@ function buildRoleFilters(members) {
             };
 
         const roleName =
-            String(role.name || "Member").trim();
+            String(
+                role.name || "Member"
+            ).trim();
 
         const roleKey =
-            String(role.id || roleName);
+            String(
+                role.id || roleName
+            );
 
         if (!roleMap.has(roleKey)) {
-            roleMap.set(roleKey, {
-                id: roleKey,
-                name: roleName,
-                position:
-                    Number(role.position || 0)
-            });
+            roleMap.set(
+                roleKey,
+                {
+                    id: roleKey,
+                    name: roleName,
+                    position:
+                        Number(
+                            role.position || 0
+                        )
+                }
+            );
         }
     });
 
     const roles =
-        Array.from(roleMap.values())
-            .sort((first, second) => {
-                return (
-                    second.position -
-                    first.position
-                );
-            });
+        Array.from(
+            roleMap.values()
+        ).sort((first, second) => {
+            return (
+                second.position -
+                first.position
+            );
+        });
 
     memberRoleFilters.replaceChildren();
 
@@ -190,7 +373,10 @@ function buildRoleFilters(members) {
     });
 }
 
-function createRoleFilterButton(roleId, roleName) {
+function createRoleFilterButton(
+    roleId,
+    roleName
+) {
     const button =
         document.createElement("button");
 
@@ -201,23 +387,27 @@ function createRoleFilterButton(roleId, roleName) {
         "button";
 
     button.dataset.role =
-        roleId;
+        String(roleId);
 
     button.textContent =
         roleName;
 
-    if (roleId === activeRoleFilter) {
-        button.classList.add("active");
+    if (
+        String(roleId) ===
+        activeRoleFilter
+    ) {
+        button.classList.add(
+            "active"
+        );
     }
 
     button.addEventListener(
         "click",
         () => {
             activeRoleFilter =
-                roleId;
+                String(roleId);
 
             updateActiveFilterButton();
-
             renderFilteredMembers();
         }
     );
@@ -243,6 +433,10 @@ function updateActiveFilterButton() {
         );
     });
 }
+
+/* =====================================================
+   FILTER MEMBERS
+===================================================== */
 
 function renderFilteredMembers() {
     const query =
@@ -279,16 +473,16 @@ function renderFilteredMembers() {
                     member.username
                 );
 
-            const roleName =
-                normalizeSearchText(
-                    role.name
-                );
+            const roleNames =
+                getMemberRoleNames(member);
 
             const matchesSearch =
                 !query ||
                 displayName.includes(query) ||
                 username.includes(query) ||
-                roleName.includes(query);
+                roleNames.some((roleName) =>
+                    roleName.includes(query)
+                );
 
             return (
                 matchesRole &&
@@ -296,8 +490,20 @@ function renderFilteredMembers() {
             );
         });
 
-    renderMembers(filteredMembers);
+    renderMembers(
+        filteredMembers
+    );
 
+    updateSearchResult(
+        filteredMembers.length,
+        query
+    );
+}
+
+function updateSearchResult(
+    resultCount,
+    query
+) {
     if (!memberSearchResult) {
         return;
     }
@@ -306,17 +512,27 @@ function renderFilteredMembers() {
         !query &&
         activeRoleFilter === "all"
     ) {
-        memberSearchResult.textContent = "";
+        memberSearchResult.textContent =
+            "";
+
         return;
     }
 
     memberSearchResult.textContent =
-        filteredMembers.length === 1
+        resultCount === 1
             ? "1 member found"
-            : `${filteredMembers.length} members found`;
+            : `${resultCount} members found`;
 }
 
+/* =====================================================
+   RENDER MEMBERS
+===================================================== */
+
 function renderMembers(members) {
+    if (!memberGrid) {
+        return;
+    }
+
     memberGrid.replaceChildren();
 
     if (members.length === 0) {
@@ -329,13 +545,17 @@ function renderMembers(members) {
         message.textContent =
             "No Familia member matches the selected filter.";
 
-        memberGrid.appendChild(message);
+        memberGrid.appendChild(
+            message
+        );
 
         return;
     }
 
     const groups =
-        groupMembersByRole(members);
+        groupMembersByRole(
+            members
+        );
 
     const fragment =
         document.createDocumentFragment();
@@ -346,11 +566,18 @@ function renderMembers(members) {
         );
     });
 
-    memberGrid.appendChild(fragment);
+    memberGrid.appendChild(
+        fragment
+    );
 }
 
+/* =====================================================
+   GROUP MEMBERS BY HIGHEST ROLE
+===================================================== */
+
 function groupMembersByRole(members) {
-    const groups = new Map();
+    const groups =
+        new Map();
 
     members.forEach((member) => {
         const role =
@@ -362,36 +589,54 @@ function groupMembersByRole(members) {
             };
 
         const roleKey =
-            role.id ||
-            role.name ||
-            "Member";
+            String(
+                role.id ||
+                role.name ||
+                "Member"
+            );
 
         if (!groups.has(roleKey)) {
-            groups.set(roleKey, {
-                roleName:
-                    role.name || "Member",
+            groups.set(
+                roleKey,
+                {
+                    roleName:
+                        role.name ||
+                        "Member",
 
-                rolePosition:
-                    Number(role.position || 0),
+                    rolePosition:
+                        Number(
+                            role.position || 0
+                        ),
 
-                roleColor:
-                    Number(role.color || 0),
+                    roleColor:
+                        Number(
+                            role.color || 0
+                        ),
 
-                members: []
-            });
+                    members: []
+                }
+            );
         }
 
-        groups.get(roleKey).members.push(member);
+        groups
+            .get(roleKey)
+            .members
+            .push(member);
     });
 
-    return Array.from(groups.values())
-        .sort((first, second) => {
-            return (
-                second.rolePosition -
-                first.rolePosition
-            );
-        });
+    return Array.from(
+        groups.values()
+    ).sort((first, second) => {
+        return (
+            second.rolePosition -
+            first.rolePosition
+        );
+    });
 }
+
+/* =====================================================
+   ROLE SECTIONS
+===================================================== */
 
 function createRoleSection(group) {
     const section =
@@ -472,6 +717,99 @@ function createRoleSection(group) {
     return section;
 }
 
+/* =====================================================
+   MEMBER BADGES
+===================================================== */
+
+function getMemberBadgeKeys(member) {
+    if (!member?.id) {
+        return [];
+    }
+
+    return Array.isArray(
+        MEMBER_BADGES[member.id]
+    )
+        ? MEMBER_BADGES[member.id]
+        : [];
+}
+
+function createMemberBadges(member) {
+    const badgeKeys =
+        getMemberBadgeKeys(member);
+
+    if (badgeKeys.length === 0) {
+        return null;
+    }
+
+    const container =
+        document.createElement("div");
+
+    container.className =
+        "member-badges";
+
+    badgeKeys.forEach((badgeKey) => {
+        const badge =
+            BADGE_DEFINITIONS[badgeKey];
+
+        if (!badge) {
+            console.warn(
+                `Unknown badge: ${badgeKey}`
+            );
+
+            return;
+        }
+
+        const element =
+            document.createElement("span");
+
+        element.className =
+            `member-badge member-badge-${badge.className}`;
+
+        element.title =
+            badge.description;
+
+        element.setAttribute(
+            "aria-label",
+            `${badge.label}: ${badge.description}`
+        );
+
+        const icon =
+            document.createElement("span");
+
+        icon.className =
+            "member-badge-icon";
+
+        icon.textContent =
+            badge.icon;
+
+        const label =
+            document.createElement("span");
+
+        label.className =
+            "member-badge-label";
+
+        label.textContent =
+            badge.label;
+
+        element.append(
+            icon,
+            label
+        );
+
+        container.appendChild(
+            element
+        );
+    });
+
+    return container.children.length > 0
+        ? container
+        : null;
+}
+
+/* =====================================================
+   MEMBER CARD
+===================================================== */
+
 function createMemberCard(member) {
     const displayName =
         member.displayName ||
@@ -534,14 +872,15 @@ function createMemberCard(member) {
         member.highestRole?.name ||
         "Member";
 
-    if (
+    const roleColor =
         Number(
             member.highestRole?.color || 0
-        ) > 0
-    ) {
+        );
+
+    if (roleColor > 0) {
         rank.style.color =
             decimalColorToHex(
-                member.highestRole.color
+                roleColor
             );
     }
 
@@ -554,6 +893,9 @@ function createMemberCard(member) {
     name.title =
         displayName;
 
+    const badges =
+        createMemberBadges(member);
+
     const usernameElement =
         document.createElement("p");
 
@@ -563,16 +905,51 @@ function createMemberCard(member) {
     usernameElement.textContent =
         `@${username}`;
 
-    avatarContainer.appendChild(avatar);
+    avatarContainer.appendChild(
+        avatar
+    );
 
     card.append(
         avatarContainer,
         rank,
-        name,
+        name
+    );
+
+    if (badges) {
+        card.appendChild(
+            badges
+        );
+    }
+
+    card.appendChild(
         usernameElement
     );
 
     return card;
+}
+
+/* =====================================================
+   ROLE NAME HELPERS
+===================================================== */
+
+function getMemberRoleNames(member) {
+    if (
+        Array.isArray(member.allRoles) &&
+        member.allRoles.length > 0
+    ) {
+        return member.allRoles.map(
+            (role) =>
+                normalizeSearchText(
+                    role?.name
+                )
+        );
+    }
+
+    return [
+        normalizeSearchText(
+            member.highestRole?.name
+        )
+    ];
 }
 
 function normalizeSearchText(value) {
@@ -582,15 +959,31 @@ function normalizeSearchText(value) {
 }
 
 function decimalColorToHex(decimalColor) {
+    const safeColor =
+        Number(decimalColor);
+
+    if (!Number.isFinite(safeColor)) {
+        return "#d4af37";
+    }
+
     return (
         "#" +
-        Number(decimalColor)
+        safeColor
             .toString(16)
             .padStart(6, "0")
+            .slice(-6)
     );
 }
 
+/* =====================================================
+   ERROR MESSAGE
+===================================================== */
+
 function showError(messageText) {
+    if (!memberGrid) {
+        return;
+    }
+
     const box =
         document.createElement("div");
 
@@ -614,7 +1007,13 @@ function showError(messageText) {
         message
     );
 
-    memberGrid.replaceChildren(box);
+    memberGrid.replaceChildren(
+        box
+    );
 }
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
 
 loadDiscordMembers();
