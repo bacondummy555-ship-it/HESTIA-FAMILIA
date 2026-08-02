@@ -8,6 +8,9 @@ that is currently inside members.js.
 const HOME_MEMBERS_API_URL =
     "https://hestia-members-api.bacondummy555.workers.dev/members";
 
+const VISITOR_API_URL =
+    "https://hestia-visitor-counter.bacondummy555.workers.dev";
+
 const revealSections =
     document.querySelectorAll(".reveal-section");
 
@@ -23,7 +26,7 @@ const memberStatistic =
 const leadershipStatistic =
     document.getElementById("stat-leadership");
 
-const adminStatistic =
+const highCouncilStatistic =
     document.getElementById("stat-admins");
 
 const staffStatistic =
@@ -33,27 +36,33 @@ const staffStatistic =
    SECTION REVEAL
 ===================================================== */
 
-const revealObserver =
-    new IntersectionObserver(
-        (entries, observer) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) {
-                    return;
-                }
+if ("IntersectionObserver" in window) {
+    const revealObserver =
+        new IntersectionObserver(
+            (entries, observer) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    }
 
-                entry.target.classList.add("visible");
+                    entry.target.classList.add("visible");
 
-                observer.unobserve(entry.target);
-            });
-        },
-        {
-            threshold: 0.12
-        }
-    );
+                    observer.unobserve(entry.target);
+                });
+            },
+            {
+                threshold: 0.12
+            }
+        );
 
-revealSections.forEach((section) => {
-    revealObserver.observe(section);
-});
+    revealSections.forEach((section) => {
+        revealObserver.observe(section);
+    });
+} else {
+    revealSections.forEach((section) => {
+        section.classList.add("visible");
+    });
+}
 
 /* =====================================================
    BACK TO TOP
@@ -95,13 +104,20 @@ async function loadHomepageStatistics() {
         !statisticsStatus ||
         !memberStatistic ||
         !leadershipStatistic ||
-        !adminStatistic ||
+        !highCouncilStatistic ||
         !staffStatistic
     ) {
+        console.error(
+            "One or more homepage statistic elements are missing."
+        );
+
         return;
     }
 
     try {
+        statisticsStatus.textContent =
+            "Gathering Familia records...";
+
         const response =
             await fetch(
                 `${HOME_MEMBERS_API_URL}?time=${Date.now()}`,
@@ -140,29 +156,52 @@ async function loadHomepageStatistics() {
         };
 
         members.forEach((member) => {
-            const roleName =
-                String(
-                    member.highestRole?.name || ""
-                )
-                    .trim()
-                    .toLowerCase();
+            const roleNames =
+                getMemberRoleNames(member);
+
+            const hasRole = (...roleSearchNames) => {
+                return roleNames.some((roleName) => {
+                    return roleSearchNames.some(
+                        (roleSearchName) => {
+                            return roleName.includes(
+                                normalizeText(
+                                    roleSearchName
+                                )
+                            );
+                        }
+                    );
+                });
+            };
 
             if (
-                roleName.includes("owner") ||
-                roleName.includes("leader") ||
-                roleName.includes("overseer")
+                hasRole(
+                    "owner",
+                    "leader",
+                    "co-leader",
+                    "co leader",
+                    "leadership",
+                    "overseer"
+                )
             ) {
                 counts.leadership += 1;
             }
 
-            if (roleName.includes("high council")) {
-                counts.admins += 1;
+            if (
+                hasRole(
+                    "high council",
+                    "admin",
+                    "administrator"
+                )
+            ) {
+                counts.highCouncil += 1;
             }
 
             if (
-                roleName.includes("staff") ||
-                roleName.includes("helper") ||
-                roleName.includes("moderator")
+                hasRole(
+                    "staff",
+                    "helper",
+                    "moderator"
+                )
             ) {
                 counts.staff += 1;
             }
@@ -179,8 +218,8 @@ async function loadHomepageStatistics() {
         );
 
         setStatisticTarget(
-            adminStatistic,
-            counts.admins
+            highCouncilStatistic,
+            counts.highCouncil
         );
 
         setStatisticTarget(
@@ -201,12 +240,67 @@ async function loadHomepageStatistics() {
 
         statisticsStatus.textContent =
             "Familia records are temporarily unavailable.";
+
+        setStatisticTarget(
+            memberStatistic,
+            0
+        );
+
+        setStatisticTarget(
+            leadershipStatistic,
+            0
+        );
+
+        setStatisticTarget(
+            highCouncilStatistic,
+            0
+        );
+
+        setStatisticTarget(
+            staffStatistic,
+            0
+        );
     }
 }
 
+function getMemberRoleNames(member) {
+    if (
+        Array.isArray(member.allRoles) &&
+        member.allRoles.length > 0
+    ) {
+        return member.allRoles.map((role) => {
+            return normalizeText(role?.name);
+        });
+    }
+
+    return [
+        normalizeText(
+            member.highestRole?.name
+        )
+    ];
+}
+
+function normalizeText(value) {
+    return String(value || "")
+        .trim()
+        .toLowerCase();
+}
+
 function setStatisticTarget(element, value) {
+    if (!element) {
+        return;
+    }
+
+    const numericValue =
+        Number(value);
+
+    const safeValue =
+        Number.isFinite(numericValue)
+            ? numericValue
+            : 0;
+
     element.dataset.target =
-        String(value);
+        String(safeValue);
 
     element.textContent =
         "0";
@@ -217,6 +311,14 @@ function animateStatistics() {
         document.querySelectorAll(
             ".statistic-number"
         );
+
+    if (!("IntersectionObserver" in window)) {
+        statistics.forEach((statistic) => {
+            animateNumber(statistic);
+        });
+
+        return;
+    }
 
     const statisticsObserver =
         new IntersectionObserver(
@@ -246,8 +348,17 @@ function animateStatistics() {
 }
 
 function animateNumber(element) {
+    if (!element) {
+        return;
+    }
+
+    const parsedTarget =
+        Number(element.dataset.target);
+
     const target =
-        Number(element.dataset.target || 0);
+        Number.isFinite(parsedTarget)
+            ? parsedTarget
+            : 0;
 
     const duration =
         1100;
@@ -272,26 +383,29 @@ function animateNumber(element) {
                 3
             );
 
-        element.textContent =
-            String(
-                Math.round(
-                    target *
-                    easedProgress
-                )
+        const currentValue =
+            Math.round(
+                target *
+                easedProgress
             );
+
+        element.textContent =
+            currentValue.toLocaleString();
 
         if (progress < 1) {
             requestAnimationFrame(update);
+        } else {
+            element.textContent =
+                target.toLocaleString();
         }
     }
 
     requestAnimationFrame(update);
 }
 
-loadHomepageStatistics();
-
-const VISITOR_API_URL =
-    "https://hestia-visitor-counter.bacondummy555.workers.dev";
+/* =====================================================
+   WEBSITE VISITOR COUNTER
+===================================================== */
 
 async function loadVisitorCounter() {
     const visitorElement =
@@ -305,7 +419,7 @@ async function loadVisitorCounter() {
         "hestia-last-visit-date";
 
     const today =
-        new Date().toISOString().slice(0, 10);
+        getLocalDateKey();
 
     const alreadyCountedToday =
         localStorage.getItem(storageKey) === today;
@@ -321,24 +435,30 @@ async function loadVisitorCounter() {
             : "POST";
 
     try {
-        const response = await fetch(
-            `${VISITOR_API_URL}${endpoint}`,
-            {
-                method,
-                cache: "no-store",
+        const response =
+            await fetch(
+                `${VISITOR_API_URL}${endpoint}`,
+                {
+                    method,
+                    mode: "cors",
+                    cache: "no-store",
 
-                headers: {
-                    Accept: "application/json"
+                    headers: {
+                        Accept: "application/json"
+                    }
                 }
-            }
-        );
+            );
 
-        const data = await response.json();
+        const data =
+            await response.json();
+
+        const visitorCount =
+            Number(data.visitors);
 
         if (
             !response.ok ||
             data.success !== true ||
-            typeof data.visitors !== "number"
+            !Number.isFinite(visitorCount)
         ) {
             throw new Error(
                 data.error ||
@@ -346,12 +466,14 @@ async function loadVisitorCounter() {
             );
         }
 
-        visitorElement.dataset.target =
-            String(data.visitors);
+        setStatisticTarget(
+            visitorElement,
+            visitorCount
+        );
 
-        visitorElement.textContent = "0";
-
-        animateNumber(visitorElement);
+        animateNumber(
+            visitorElement
+        );
 
         if (!alreadyCountedToday) {
             localStorage.setItem(
@@ -366,8 +488,34 @@ async function loadVisitorCounter() {
             error
         );
 
-        visitorElement.textContent = "—";
+        visitorElement.textContent =
+            "—";
     }
 }
 
+function getLocalDateKey() {
+    const now =
+        new Date();
+
+    const year =
+        now.getFullYear();
+
+    const month =
+        String(
+            now.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            now.getDate()
+        ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+loadHomepageStatistics();
 loadVisitorCounter();
