@@ -134,8 +134,8 @@ async function loadHomepageStatistics() {
             data.members;
 
         const counts = {
-            leaders: 0,
-            high_council: 0,
+            leadership: 0,
+            highCouncil: 0,
             staff: 0
         };
 
