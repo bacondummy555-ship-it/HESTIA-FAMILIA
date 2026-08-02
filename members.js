@@ -14,8 +14,9 @@ const MEMBERS_API_URL =
 
    Example:
    "123456789012345678": [
-       "founder",
        "developer",
+       "booster",
+       "elite',
        "active"
    ]
 ===================================================== */
@@ -24,9 +25,14 @@ const MEMBER_BADGES = {
     /*
     Replace these examples with real Discord user IDs.
 
-    "PASTE_SALT_ID_HERE": [
-        "founder",
+    "1428238972471218230": [
         "developer",
+        "booster",
+        "veteran",
+        "pioneer",
+        "contributor"
+        "highCouncil",
+        "overseer",
         "active"
     ],
 
