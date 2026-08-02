@@ -183,18 +183,19 @@ async function loadDiscordMembers() {
 
         memberGrid.replaceChildren();
 
-        const response = await fetch(
-            `${MEMBERS_API_URL}?time=${Date.now()}`,
-            {
-                method: "GET",
-                mode: "cors",
-                cache: "no-store",
+        const response =
+            await fetch(
+                `${MEMBERS_API_URL}?time=${Date.now()}`,
+                {
+                    method: "GET",
+                    mode: "cors",
+                    cache: "no-store",
 
-                headers: {
-                    Accept: "application/json"
+                    headers: {
+                        Accept: "application/json"
+                    }
                 }
-            }
-        );
+            );
 
         const data =
             await response.json();
@@ -735,11 +736,6 @@ function createMemberBadges(member) {
     container.className =
         "member-badges";
 
-    /*
-    Show only five badges to prevent
-    the card from becoming overcrowded.
-    */
-
     badgeKeys
         .slice(0, 5)
         .forEach((badgeKey) => {
@@ -802,6 +798,53 @@ function createMemberBadges(member) {
 }
 
 /* =====================================================
+   AVATAR DECORATION
+===================================================== */
+
+function createAvatarDecoration(member) {
+    const decorationUrl =
+        String(
+            member.avatarDecorationUrl || ""
+        ).trim();
+
+    if (!decorationUrl) {
+        return null;
+    }
+
+    const decoration =
+        document.createElement("img");
+
+    decoration.className =
+        "member-avatar-decoration";
+
+    decoration.src =
+        decorationUrl;
+
+    decoration.alt =
+        "";
+
+    decoration.loading =
+        "lazy";
+
+    decoration.decoding =
+        "async";
+
+    decoration.draggable =
+        false;
+
+    decoration.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    decoration.onerror = () => {
+        decoration.remove();
+    };
+
+    return decoration;
+}
+
+/* =====================================================
    MEMBER CARD
 ===================================================== */
 
@@ -840,8 +883,17 @@ function createMemberCard(member) {
     avatarContainer.className =
         "member-avatar";
 
+    if (member.avatarDecorationUrl) {
+        avatarContainer.classList.add(
+            "has-decoration"
+        );
+    }
+
     const avatar =
         document.createElement("img");
+
+    avatar.className =
+        "member-avatar-image";
 
     avatar.src =
         member.avatarUrl ||
@@ -853,12 +905,21 @@ function createMemberCard(member) {
     avatar.loading =
         "lazy";
 
+    avatar.decoding =
+        "async";
+
+    avatar.draggable =
+        false;
+
     avatar.onerror = () => {
         avatar.onerror = null;
 
         avatar.src =
             "https://cdn.discordapp.com/embed/avatars/0.png";
     };
+
+    const avatarDecoration =
+        createAvatarDecoration(member);
 
     const role =
         getHighestRole(member);
@@ -909,6 +970,12 @@ function createMemberCard(member) {
     avatarContainer.appendChild(
         avatar
     );
+
+    if (avatarDecoration) {
+        avatarContainer.appendChild(
+            avatarDecoration
+        );
+    }
 
     card.append(
         avatarContainer,
