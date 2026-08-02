@@ -22,6 +22,18 @@ const MEMBER_BADGES = {
         "veteran",
         "active"
     ]
+   // CAS
+   ,"1230419514907295747": [
+      "founder",
+      "creator",
+      "active"
+      ]
+
+   // AKI
+   ,"1419867997643735070": [
+      "overseer",
+      "active"
+      
 
     /*
     Add another member like this:
