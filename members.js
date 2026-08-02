@@ -33,6 +33,7 @@ const MEMBER_BADGES = {
    ,"1419867997643735070": [
       "overseer",
       "active"
+      ]
       
 
     /*
