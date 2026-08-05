@@ -10,12 +10,23 @@
         content="width=device-width, initial-scale=1.0"
     >
 
+    <meta
+        name="description"
+        content="Approved memories, screenshots, artwork, and videos shared by Hestia Familia members."
+    >
+
     <title>Gallery | HESTIA FAMILIA</title>
 
-    <link rel="icon" href="webicon.png" sizes="any">
-<link rel="icon" type="image/png" href="webicon.png">
+    <link
+        rel="icon"
+        type="image/png"
+        href="webicon.png"
+    >
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
 
     <link
         rel="preconnect"
@@ -24,16 +35,27 @@
     >
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap"
         rel="stylesheet"
     >
 
-    <link rel="stylesheet" href="style.css?v=80">
-    <link rel="stylesheet" href="gallery.css?v=80">
+    <link
+        rel="stylesheet"
+        href="style.css?v=82"
+    >
+
+    <link
+        rel="stylesheet"
+        href="gallery.css?v=82"
+    >
 
 </head>
 
 <body class="gallery-page">
+
+    <!-- ================================================
+         LOADING SCREEN
+    ================================================= -->
 
     <div id="loading-screen">
 
@@ -48,7 +70,14 @@
 
     </div>
 
-    <div class="background-effects">
+    <!-- ================================================
+         BACKGROUND EFFECTS
+    ================================================= -->
+
+    <div
+        class="background-effects"
+        aria-hidden="true"
+    >
 
         <div class="stars"></div>
 
@@ -60,20 +89,30 @@
 
     </div>
 
+    <!-- ================================================
+         HEADER
+    ================================================= -->
+
     <header>
 
-        <a class="brand" href="index.html">
+        <a
+            class="brand"
+            href="index.html"
+            aria-label="Go to Hestia Familia homepage"
+        >
 
             <img
                 src="HESTIACLANLOGOREAL.png"
-                alt="HESTIA Logo"
+                alt="HESTIA Familia logo"
             >
 
-            <span>HESTIA FAMILIA</span>
+            <span>
+                HESTIA FAMILIA
+            </span>
 
         </a>
 
-        <nav>
+        <nav aria-label="Main navigation">
 
             <a href="index.html">
                 Home
@@ -86,6 +125,7 @@
             <a
                 class="active"
                 href="gallery.html"
+                aria-current="page"
             >
                 Gallery
             </a>
@@ -106,15 +146,26 @@
 
     </header>
 
+    <!-- ================================================
+         MAIN CONTENT
+    ================================================= -->
+
     <main class="gallery-main">
+
+        <!-- Gallery introduction -->
 
         <section class="gallery-heading">
 
-            <span class="heading-symbol">
+            <span
+                class="heading-symbol"
+                aria-hidden="true"
+            >
                 ✦
             </span>
 
-            <h1>Familia Gallery</h1>
+            <h1>
+                Familia Gallery
+            </h1>
 
             <p>
                 Memories, battles, creations, and moments shared
@@ -123,184 +174,46 @@
 
         </section>
 
+        <!-- Dynamic Discord gallery -->
+
         <section class="gallery-section">
 
             <div class="gallery-title">
 
-                <span>✦</span>
+                <span aria-hidden="true">
+                    ✦
+                </span>
 
-                <h2>Our Memories</h2>
+                <h2>
+                    Our Memories
+                </h2>
 
-                <span>✦</span>
+                <span aria-hidden="true">
+                    ✦
+                </span>
 
             </div>
 
-            <p class="gallery-count">
-                Click an image to view it in fullscreen.
+            <p
+                id="gallery-status"
+                class="gallery-status gallery-count"
+                aria-live="polite"
+            >
+                Gathering approved Familia memories...
             </p>
+
+            <!--
+                Approved images and videos from Discord
+                will be generated here automatically
+                by gallery.js.
+            -->
 
             <div
                 id="gallery-grid"
                 class="gallery-grid"
-            >
-
-                <button
-                    class="gallery-item"
-                    type="button"
-                    data-full="meandaki2.png"
-                    data-title="Random Snaps"
-                    data-description="A memorable memory of Hestia Familia."
-                >
-
-                    <img
-                        src="meandaki2.png"
-                        alt="Random Snaps"
-                        loading="lazy"
-                    >
-
-                    <span class="gallery-overlay">
-
-                        <strong>Random Snaps</strong>
-
-                        <small>
-                            View image
-                        </small>
-
-                    </span>
-
-                </button>
-
-                <button
-                    class="gallery-item"
-                    type="button"
-                    data-full="gallery2.jpg"
-                    data-title="Battle Memories"
-                    data-description="Moments forged through battle and teamwork."
-                >
-
-                    <img
-                        src="gallery2.jpg"
-                        alt="Battle Memories"
-                        loading="lazy"
-                    >
-
-                    <span class="gallery-overlay">
-
-                        <strong>Battle Memories</strong>
-
-                        <small>
-                            View image
-                        </small>
-
-                    </span>
-
-                </button>
-
-                <button
-                    class="gallery-item"
-                    type="button"
-                    data-full="gallery3.jpg"
-                    data-title="Familia Adventure"
-                    data-description="Another adventure shared beneath our banner."
-                >
-
-                    <img
-                        src="gallery3.jpg"
-                        alt="Familia Adventure"
-                        loading="lazy"
-                    >
-
-                    <span class="gallery-overlay">
-
-                        <strong>Familia Adventure</strong>
-
-                        <small>
-                            View image
-                        </small>
-
-                    </span>
-
-                </button>
-
-                <button
-                    class="gallery-item"
-                    type="button"
-                    data-full="gallery4.jpg"
-                    data-title="Clan Moments"
-                    data-description="A special moment remembered by the Familia."
-                >
-
-                    <img
-                        src="gallery4.jpg"
-                        alt="Clan Moments"
-                        loading="lazy"
-                    >
-
-                    <span class="gallery-overlay">
-
-                        <strong>Clan Moments</strong>
-
-                        <small>
-                            View image
-                        </small>
-
-                    </span>
-
-                </button>
-
-                <button
-                    class="gallery-item"
-                    type="button"
-                    data-full="gallery5.jpg"
-                    data-title="Hestia Creation"
-                    data-description="A creation made by a member of Hestia Familia."
-                >
-
-                    <img
-                        src="gallery5.jpg"
-                        alt="Hestia Creation"
-                        loading="lazy"
-                    >
-
-                    <span class="gallery-overlay">
-
-                        <strong>Hestia Creation</strong>
-
-                        <small>
-                            View image
-                        </small>
-
-                    </span>
-
-                </button>
-
-                <button
-                    class="gallery-item"
-                    type="button"
-                    data-full="gallery6.jpg"
-                    data-title="Under the Banner"
-                    data-description="United under one banner as one Familia."
-                >
-
-                    <img
-                        src="gallery6.jpg"
-                        alt="Under the Banner"
-                        loading="lazy"
-                    >
-
-                    <span class="gallery-overlay">
-
-                        <strong>Under the Banner</strong>
-
-                        <small>
-                            View image
-                        </small>
-
-                    </span>
-
-                </button>
-
-            </div>
+                aria-live="polite"
+                aria-busy="true"
+            ></div>
 
         </section>
 
@@ -310,17 +223,24 @@
 
     </main>
 
+    <!-- ================================================
+         IMAGE / VIDEO LIGHTBOX
+    ================================================= -->
+
     <div
         id="gallery-lightbox"
         class="gallery-lightbox"
         aria-hidden="true"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="lightbox-title"
     >
 
         <button
             id="lightbox-close"
             class="lightbox-close"
             type="button"
-            aria-label="Close image"
+            aria-label="Close gallery preview"
         >
             ×
         </button>
@@ -329,24 +249,45 @@
             id="lightbox-previous"
             class="lightbox-navigation lightbox-previous"
             type="button"
-            aria-label="Previous image"
+            aria-label="Previous gallery item"
         >
             ‹
         </button>
 
         <figure class="lightbox-content">
 
-            <img
-                id="lightbox-image"
-                src=""
-                alt=""
+            <div
+                id="lightbox-media-container"
+                class="lightbox-media-container"
             >
+
+                <img
+                    id="lightbox-image"
+                    src=""
+                    alt=""
+                    hidden
+                >
+
+                <video
+                    id="lightbox-video"
+                    controls
+                    playsinline
+                    preload="metadata"
+                    hidden
+                ></video>
+
+            </div>
 
             <figcaption>
 
                 <h2 id="lightbox-title"></h2>
 
                 <p id="lightbox-description"></p>
+
+                <span
+                    id="lightbox-uploader"
+                    class="lightbox-uploader"
+                ></span>
 
             </figcaption>
 
@@ -356,15 +297,20 @@
             id="lightbox-next"
             class="lightbox-navigation lightbox-next"
             type="button"
-            aria-label="Next image"
+            aria-label="Next gallery item"
         >
             ›
         </button>
 
     </div>
 
-    <script src="script.js?v=80"></script>
-    <script src="gallery.js?v=81"></script>
+    <!-- ================================================
+         SCRIPTS
+    ================================================= -->
+
+    <script src="script.js?v=82"></script>
+
+    <script src="gallery.js?v=82"></script>
 
 </body>
 
