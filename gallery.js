@@ -1,161 +1,251 @@
 "use strict";
 
-const galleryItems =
-    Array.from(
-        document.querySelectorAll(".gallery-item")
-    );
+const GALLERY_API_URL =
+    "https://hestia-gallery-api.bacondummy555.workers.dev/gallery";
 
-const lightbox =
-    document.getElementById("gallery-lightbox");
+const galleryGrid =
+    document.getElementById("gallery-grid");
 
-const lightboxImage =
-    document.getElementById("lightbox-image");
+const galleryStatus =
+    document.getElementById("gallery-status");
 
-const lightboxTitle =
-    document.getElementById("lightbox-title");
+async function loadDiscordGallery() {
+    if (!galleryGrid) {
+        console.error(
+            "The gallery-grid element is missing."
+        );
 
-const lightboxDescription =
-    document.getElementById("lightbox-description");
-
-const closeButton =
-    document.getElementById("lightbox-close");
-
-const previousButton =
-    document.getElementById("lightbox-previous");
-
-const nextButton =
-    document.getElementById("lightbox-next");
-
-let currentImageIndex = 0;
-
-galleryItems.forEach((item, index) => {
-    item.addEventListener("click", () => {
-        openLightbox(index);
-    });
-});
-
-closeButton.addEventListener(
-    "click",
-    closeLightbox
-);
-
-previousButton.addEventListener(
-    "click",
-    showPreviousImage
-);
-
-nextButton.addEventListener(
-    "click",
-    showNextImage
-);
-
-lightbox.addEventListener(
-    "click",
-    (event) => {
-        if (event.target === lightbox) {
-            closeLightbox();
-        }
+        return;
     }
-);
 
-document.addEventListener(
-    "keydown",
-    (event) => {
+    if (galleryStatus) {
+        galleryStatus.textContent =
+            "Gathering approved Familia memories...";
+    }
+
+    galleryGrid.replaceChildren();
+
+    try {
+        const response =
+            await fetch(
+                `${GALLERY_API_URL}?time=${Date.now()}`,
+                {
+                    method: "GET",
+                    mode: "cors",
+                    cache: "no-store",
+
+                    headers: {
+                        Accept: "application/json"
+                    }
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error ||
+                `Gallery API returned ${response.status}.`
+            );
+        }
+
         if (
-            !lightbox.classList.contains("open")
+            data.success !== true ||
+            !Array.isArray(data.gallery)
         ) {
+            throw new Error(
+                "The Gallery API returned invalid data."
+            );
+        }
+
+        if (data.gallery.length === 0) {
+            showEmptyGallery();
+
             return;
         }
 
-        if (event.key === "Escape") {
-            closeLightbox();
+        const fragment =
+            document.createDocumentFragment();
+
+        data.gallery.forEach((item) => {
+            fragment.appendChild(
+                createGalleryCard(item)
+            );
+        });
+
+        galleryGrid.appendChild(fragment);
+
+        if (galleryStatus) {
+            galleryStatus.textContent =
+                `${data.gallery.length} approved ${
+                    data.gallery.length === 1
+                        ? "memory"
+                        : "memories"
+                } from the Familia`;
         }
 
-        if (event.key === "ArrowLeft") {
-            showPreviousImage();
+    } catch (error) {
+        console.error(
+            "Gallery loading error:",
+            error
+        );
+
+        if (galleryStatus) {
+            galleryStatus.textContent =
+                "The gallery is temporarily unavailable.";
         }
 
-        if (event.key === "ArrowRight") {
-            showNextImage();
-        }
+        showGalleryError(
+            error instanceof Error
+                ? error.message
+                : String(error)
+        );
     }
-);
+}
 
-function openLightbox(index) {
-    currentImageIndex = index;
+function createGalleryCard(item) {
+    const card =
+        document.createElement("article");
 
-    updateLightbox();
+    card.className =
+        "gallery-card";
 
-    lightbox.classList.add("open");
+    const mediaWrapper =
+        document.createElement("div");
 
-    lightbox.setAttribute(
-        "aria-hidden",
-        "false"
+    mediaWrapper.className =
+        "gallery-media-wrapper";
+
+    let media;
+
+    if (item.type === "video") {
+        media =
+            document.createElement("video");
+
+        media.controls = true;
+        media.preload = "metadata";
+        media.playsInline = true;
+        media.src = item.url;
+    } else {
+        media =
+            document.createElement("img");
+
+        media.src =
+            item.proxyUrl ||
+            item.url;
+
+        media.alt =
+            item.title ||
+            "Hestia Familia gallery image";
+
+        media.loading =
+            "lazy";
+
+        media.decoding =
+            "async";
+    }
+
+    media.className =
+        "gallery-media";
+
+    mediaWrapper.appendChild(media);
+
+    const overlay =
+        document.createElement("div");
+
+    overlay.className =
+        "gallery-card-overlay";
+
+    const title =
+        document.createElement("h3");
+
+    title.textContent =
+        item.title ||
+        "Hestia Memory";
+
+    const description =
+        document.createElement("p");
+
+    description.className =
+        "gallery-description";
+
+    description.textContent =
+        item.description ||
+        `Submitted by ${item.uploader || "a Familia member"}`;
+
+    const uploader =
+        document.createElement("span");
+
+    uploader.className =
+        "gallery-uploader";
+
+    uploader.textContent =
+        `By ${item.uploader || "Unknown Member"}`;
+
+    overlay.append(
+        title,
+        description,
+        uploader
     );
 
-    document.body.style.overflow =
-        "hidden";
-}
-
-function closeLightbox() {
-    lightbox.classList.remove("open");
-
-    lightbox.setAttribute(
-        "aria-hidden",
-        "true"
+    card.append(
+        mediaWrapper,
+        overlay
     );
 
-    document.body.style.overflow =
-        "";
+    return card;
 }
 
-function showPreviousImage() {
-    currentImageIndex =
-        (
-            currentImageIndex -
-            1 +
-            galleryItems.length
-        ) %
-        galleryItems.length;
+function showEmptyGallery() {
+    const message =
+        document.createElement("div");
 
-    updateLightbox();
+    message.className =
+        "gallery-empty-message";
+
+    message.innerHTML = `
+        <strong>No approved memories yet</strong>
+        <p>
+            Upload a picture or video in the Discord
+            gallery-submissions channel and have staff
+            approve it with ✅.
+        </p>
+    `;
+
+    galleryGrid.replaceChildren(message);
+
+    if (galleryStatus) {
+        galleryStatus.textContent =
+            "Waiting for the Familia's first approved memory.";
+    }
 }
 
-function showNextImage() {
-    currentImageIndex =
-        (
-            currentImageIndex +
-            1
-        ) %
-        galleryItems.length;
+function showGalleryError(messageText) {
+    const message =
+        document.createElement("div");
 
-    updateLightbox();
+    message.className =
+        "gallery-error-message";
+
+    const title =
+        document.createElement("strong");
+
+    title.textContent =
+        "Gallery Connection Error";
+
+    const description =
+        document.createElement("p");
+
+    description.textContent =
+        messageText;
+
+    message.append(
+        title,
+        description
+    );
+
+    galleryGrid.replaceChildren(message);
 }
 
-function updateLightbox() {
-    const item =
-        galleryItems[currentImageIndex];
-
-    const imageSource =
-        item.dataset.full;
-
-    const imageTitle =
-        item.dataset.title ||
-        "Hestia Familia";
-
-    const imageDescription =
-        item.dataset.description ||
-        "";
-
-    lightboxImage.src =
-        imageSource;
-
-    lightboxImage.alt =
-        imageTitle;
-
-    lightboxTitle.textContent =
-        imageTitle;
-
-    lightboxDescription.textContent =
-        imageDescription;
-}
+loadDiscordGallery();
