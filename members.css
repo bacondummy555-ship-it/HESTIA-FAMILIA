@@ -20,6 +20,10 @@ body.members-page {
     background: #030507;
 }
 
+body.member-profile-modal-open {
+    overflow: hidden !important;
+}
+
 /* =====================================================
    MAIN CONTAINER
 ===================================================== */
@@ -403,7 +407,8 @@ body.members-page {
     border-color:
         rgba(212, 175, 55, 0.65);
 
-    transform: translateY(-2px);
+    transform:
+        translateY(-2px);
 }
 
 .member-role-filter.active {
@@ -504,7 +509,7 @@ body.members-page {
 
     width: 100%;
     min-width: 0;
-    min-height: 345px;
+    min-height: 365px;
 
     display: flex;
     flex-direction: column;
@@ -514,9 +519,11 @@ body.members-page {
     padding:
         38px
         20px
-        32px;
+        28px;
 
     overflow: visible;
+
+    appearance: none;
 
     border:
         1px solid
@@ -525,6 +532,8 @@ body.members-page {
     border-radius: 16px;
 
     color: inherit;
+
+    font: inherit;
 
     text-align: center;
     text-decoration: none;
@@ -556,7 +565,6 @@ body.members-page {
 
     position: absolute;
     inset: 0;
-
     z-index: 0;
 
     border-radius: inherit;
@@ -572,7 +580,8 @@ body.members-page {
 
     pointer-events: none;
 
-    transition: opacity 0.3s ease;
+    transition:
+        opacity 0.3s ease;
 }
 
 .member-card::after {
@@ -581,7 +590,6 @@ body.members-page {
     position: absolute;
     top: 0;
     left: 15%;
-
     z-index: 1;
 
     width: 70%;
@@ -601,7 +609,8 @@ body.members-page {
 .member-card:hover {
     z-index: 10;
 
-    transform: translateY(-8px);
+    transform:
+        translateY(-8px);
 
     border-color:
         rgba(212, 175, 55, 0.7);
@@ -627,7 +636,7 @@ body.members-page {
 }
 
 /* =====================================================
-   MEMBER AVATAR AND DISCORD DECORATION
+   MEMBER AVATAR AND DECORATION
 ===================================================== */
 
 .member-avatar {
@@ -655,8 +664,6 @@ body.members-page {
     transition:
         transform 0.25s ease;
 }
-
-/* Normal Discord avatar */
 
 .member-avatar-image {
     position: relative;
@@ -689,7 +696,8 @@ body.members-page {
         box-shadow 0.25s ease;
 }
 
-.member-card:hover .member-avatar-image {
+.member-card:hover
+.member-avatar-image {
     border-color:
         rgba(232, 199, 91, 0.9);
 
@@ -700,8 +708,6 @@ body.members-page {
         inset 0 0 18px
         rgba(212, 175, 55, 0.08);
 }
-
-/* Discord avatar decoration */
 
 .member-avatar-decoration {
     position: absolute;
@@ -738,13 +744,9 @@ body.members-page {
         opacity 0.2s ease;
 }
 
-/* Decoration becomes visible after loading */
-
 .member-avatar-decoration.loaded {
     opacity: 1;
 }
-
-/* Hide normal gold ring when Discord decoration exists */
 
 .member-avatar.has-decoration
 .member-avatar-image {
@@ -847,6 +849,55 @@ body.members-page {
 .member-card:hover
 .member-username {
     color: #d4af37;
+}
+
+.member-profile-hint {
+    position: relative;
+    z-index: 2;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 16px;
+    padding:
+        7px
+        13px;
+
+    border:
+        1px solid
+        rgba(212, 175, 55, 0.28);
+
+    border-radius: 999px;
+
+    color: #8e8e8e;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 1.2px;
+
+    text-transform: uppercase;
+
+    background:
+        rgba(4, 6, 8, 0.55);
+
+    transition:
+        color 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease;
+}
+
+.member-card:hover
+.member-profile-hint {
+    color: #f0cf69;
+
+    border-color:
+        rgba(212, 175, 55, 0.7);
+
+    background:
+        rgba(212, 175, 55, 0.08);
 }
 
 /* =====================================================
@@ -1235,10 +1286,703 @@ body.members-page {
         );
 }
 
-/* More room for cards containing badges */
-
 .member-card:has(.member-badges) {
-    min-height: 400px;
+    min-height: 420px;
+}
+
+/* =====================================================
+   MEMBER PROFILE MODAL
+===================================================== */
+
+.member-profile-modal {
+    position: fixed;
+    z-index: 10000;
+    inset: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding:
+        32px
+        18px;
+
+    opacity: 0;
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.28s ease,
+        visibility 0.28s ease;
+}
+
+.member-profile-modal.visible {
+    opacity: 1;
+    visibility: visible;
+
+    pointer-events: auto;
+}
+
+/* =====================================================
+   MODAL BACKDROP
+===================================================== */
+
+.member-profile-backdrop {
+    position: absolute;
+    inset: 0;
+
+    background:
+        rgba(0, 0, 0, 0.86);
+
+    backdrop-filter:
+        blur(9px);
+
+    cursor: pointer;
+}
+
+/* =====================================================
+   MODAL PANEL
+===================================================== */
+
+.member-profile-panel {
+    position: relative;
+    z-index: 2;
+
+    width: min(680px, 100%);
+    max-height: calc(100vh - 64px);
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    padding:
+        42px
+        42px
+        36px;
+
+    border:
+        1px solid
+        rgba(212, 175, 55, 0.42);
+
+    border-radius: 22px;
+
+    color: #f1f1f1;
+
+    background:
+        radial-gradient(
+            circle at top center,
+            rgba(96, 68, 15, 0.2),
+            transparent 38%
+        ),
+
+        linear-gradient(
+            145deg,
+            rgba(21, 18, 12, 0.99),
+            rgba(4, 6, 9, 0.995)
+        );
+
+    box-shadow:
+        0 30px 100px
+        rgba(0, 0, 0, 0.72),
+
+        0 0 45px
+        rgba(212, 175, 55, 0.08),
+
+        inset 0 0 38px
+        rgba(212, 175, 55, 0.025);
+
+    transform:
+        translateY(24px)
+        scale(0.97);
+
+    transition:
+        transform 0.3s ease;
+}
+
+.member-profile-modal.visible
+.member-profile-panel {
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+.member-profile-panel::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: 14%;
+
+    width: 72%;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 222, 115, 0.95),
+            transparent
+        );
+
+    pointer-events: none;
+}
+
+/* =====================================================
+   MODAL SCROLLBAR
+===================================================== */
+
+.member-profile-panel {
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        rgba(212, 175, 55, 0.55)
+        rgba(5, 7, 10, 0.8);
+}
+
+.member-profile-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.member-profile-panel::-webkit-scrollbar-track {
+    background:
+        rgba(5, 7, 10, 0.8);
+}
+
+.member-profile-panel::-webkit-scrollbar-thumb {
+    border:
+        2px solid
+        rgba(5, 7, 10, 0.8);
+
+    border-radius: 999px;
+
+    background:
+        rgba(212, 175, 55, 0.55);
+}
+
+/* =====================================================
+   MODAL CLOSE BUTTON
+===================================================== */
+
+.member-profile-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 5;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 0;
+
+    border:
+        1px solid
+        rgba(212, 175, 55, 0.28);
+
+    border-radius: 50%;
+
+    color: #aaa;
+
+    font-family: Arial, sans-serif;
+    font-size: 27px;
+    line-height: 1;
+
+    background:
+        rgba(5, 7, 10, 0.82);
+
+    cursor: pointer;
+
+    transition:
+        color 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease,
+        transform 0.25s ease;
+}
+
+.member-profile-close:hover {
+    color: #d4af37;
+
+    border-color:
+        rgba(212, 175, 55, 0.85);
+
+    background:
+        rgba(23, 19, 10, 0.95);
+
+    transform: rotate(90deg);
+}
+
+.member-profile-close:focus-visible {
+    outline:
+        2px solid
+        #d4af37;
+
+    outline-offset: 4px;
+}
+
+/* =====================================================
+   PROFILE HEADER
+===================================================== */
+
+.member-profile-header {
+    display: flex;
+    align-items: center;
+
+    gap: 32px;
+
+    padding:
+        12px
+        36px
+        14px
+        4px;
+}
+
+/* =====================================================
+   PROFILE AVATAR
+===================================================== */
+
+.member-profile-avatar-wrapper {
+    position: relative;
+
+    width: 145px;
+    height: 145px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    flex: 0 0 auto;
+
+    overflow: visible;
+
+    border-radius: 50%;
+
+    isolation: isolate;
+}
+
+.member-profile-avatar {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    border:
+        3px solid
+        rgba(212, 175, 55, 0.72);
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    background: #050608;
+
+    box-shadow:
+        0 0 32px
+        rgba(212, 175, 55, 0.2),
+
+        inset 0 0 24px
+        rgba(212, 175, 55, 0.06);
+}
+
+.member-profile-decoration {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+    z-index: 4;
+
+    width: 145%;
+    height: 145%;
+
+    max-width: none;
+
+    display: block;
+
+    transform:
+        translate(-50%, -50%);
+
+    border: 0;
+    border-radius: 0;
+
+    object-fit: contain;
+
+    opacity: 0;
+
+    pointer-events: none;
+    user-select: none;
+
+    transition:
+        opacity 0.2s ease;
+}
+
+.member-profile-decoration.loaded {
+    opacity: 1;
+}
+
+.member-profile-decoration[hidden] {
+    display: none !important;
+}
+
+.member-profile-avatar-wrapper.has-decoration
+.member-profile-avatar {
+    border-color: transparent;
+
+    box-shadow:
+        0 0 18px
+        rgba(0, 0, 0, 0.4);
+}
+
+/* =====================================================
+   PROFILE IDENTITY
+===================================================== */
+
+.member-profile-identity {
+    min-width: 0;
+
+    flex: 1;
+
+    text-align: left;
+}
+
+.member-profile-rank {
+    margin:
+        0
+        0
+        8px;
+
+    color: #d4af37;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 2.4px;
+
+    text-transform: uppercase;
+}
+
+.member-profile-identity h2 {
+    margin: 0;
+
+    overflow-wrap: anywhere;
+
+    color: #f4f1e8;
+
+    font-family: "Cinzel", serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+    line-height: 1.15;
+
+    text-shadow:
+        0 0 20px
+        rgba(255, 255, 255, 0.06);
+}
+
+.member-profile-username {
+    margin:
+        10px
+        0
+        0;
+
+    overflow-wrap: anywhere;
+
+    color: #818181;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 13px;
+}
+
+/* =====================================================
+   PROFILE DIVIDER
+===================================================== */
+
+.member-profile-divider {
+    width: 100%;
+    height: 1px;
+
+    margin:
+        28px
+        0;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(212, 175, 55, 0.42),
+            transparent
+        );
+}
+
+/* =====================================================
+   PROFILE SECTIONS
+===================================================== */
+
+.member-profile-section {
+    margin-top: 28px;
+}
+
+.member-profile-section:first-of-type {
+    margin-top: 0;
+}
+
+.member-profile-section h3 {
+    margin:
+        0
+        0
+        15px;
+
+    color: #d4af37;
+
+    font-family: "Cinzel", serif;
+    font-size: 15px;
+    font-weight: 700;
+
+    letter-spacing: 1.6px;
+
+    text-transform: uppercase;
+}
+
+/* =====================================================
+   PROFILE BADGES
+===================================================== */
+
+.member-profile-badges {
+    width: 100%;
+}
+
+.member-profile-badges-list {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+.member-profile-badge {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding:
+        13px
+        14px;
+
+    border:
+        1px solid
+        rgba(212, 175, 55, 0.25);
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(20, 17, 11, 0.85),
+            rgba(5, 7, 10, 0.92)
+        );
+
+    box-shadow:
+        inset 0 0 18px
+        rgba(212, 175, 55, 0.025);
+}
+
+.member-profile-badge-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    flex: 0 0 auto;
+
+    border:
+        1px solid
+        currentColor;
+
+    border-radius: 50%;
+
+    font-family: "Cinzel", serif;
+    font-size: 17px;
+
+    background:
+        rgba(3, 5, 7, 0.52);
+}
+
+.member-profile-badge-text {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    text-align: left;
+}
+
+.member-profile-badge-text strong {
+    color: #ededed;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 0.4px;
+}
+
+.member-profile-badge-text span {
+    margin-top: 3px;
+
+    color: #777;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 9px;
+    line-height: 1.45;
+}
+
+/* =====================================================
+   PROFILE ROLES
+===================================================== */
+
+.member-profile-roles {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 9px;
+}
+
+.member-profile-role {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 34px;
+
+    padding:
+        7px
+        12px;
+
+    border:
+        1px solid
+        rgba(212, 175, 55, 0.26);
+
+    border-radius: 999px;
+
+    color: #c9c9c9;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+
+    letter-spacing: 0.5px;
+
+    background:
+        rgba(8, 10, 13, 0.72);
+}
+
+/* =====================================================
+   PROFILE EMPTY STATE
+===================================================== */
+
+.member-profile-empty {
+    margin: 0;
+
+    color: #727272;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.member-profile-empty[hidden] {
+    display: none !important;
+}
+
+/* =====================================================
+   PROFILE ACTIONS
+===================================================== */
+
+.member-profile-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 32px;
+    padding-top: 24px;
+
+    border-top:
+        1px solid
+        rgba(212, 175, 55, 0.16);
+}
+
+.member-profile-discord-link {
+    min-height: 44px;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    padding:
+        10px
+        20px;
+
+    border:
+        1px solid
+        rgba(88, 101, 242, 0.68);
+
+    border-radius: 999px;
+
+    color: #c4c9ff;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 0.5px;
+
+    text-decoration: none;
+
+    background:
+        rgba(88, 101, 242, 0.12);
+
+    transition:
+        color 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.member-profile-discord-link:hover {
+    color: #fff;
+
+    border-color: #5865f2;
+
+    background: #5865f2;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 10px 24px
+        rgba(88, 101, 242, 0.25);
+}
+
+.member-profile-discord-link:focus-visible {
+    outline:
+        2px solid
+        #aeb5ff;
+
+    outline-offset: 4px;
 }
 
 /* =====================================================
@@ -1353,6 +2097,19 @@ header .brand::after {
     .members-main {
         padding-top: 150px;
     }
+
+    .member-profile-panel {
+        width:
+            min(
+                620px,
+                100%
+            );
+
+        padding:
+            38px
+            32px
+            32px;
+    }
 }
 
 /* =====================================================
@@ -1361,7 +2118,10 @@ header .brand::after {
 
 @media (max-width: 580px) {
     .members-main {
-        width: calc(100% - 24px);
+        width:
+            calc(
+                100% - 24px
+            );
 
         padding:
             130px
@@ -1437,16 +2197,16 @@ header .brand::after {
     }
 
     .member-card {
-        min-height: 345px;
+        min-height: 365px;
 
         padding:
             36px
             18px
-            30px;
+            27px;
     }
 
     .member-card:has(.member-badges) {
-        min-height: 380px;
+        min-height: 405px;
     }
 
     .member-avatar {
@@ -1489,6 +2249,130 @@ header .brand::after {
     .members-developer {
         margin-top: 50px;
     }
+
+    /* Profile modal */
+
+    .member-profile-modal {
+        align-items: flex-end;
+
+        padding:
+            12px
+            10px;
+    }
+
+    .member-profile-panel {
+        width: 100%;
+        max-height:
+            calc(
+                100vh - 24px
+            );
+
+        padding:
+            32px
+            20px
+            24px;
+
+        border-radius:
+            20px
+            20px
+            14px
+            14px;
+
+        transform:
+            translateY(45px)
+            scale(0.98);
+    }
+
+    .member-profile-modal.visible
+    .member-profile-panel {
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+    .member-profile-close {
+        top: 14px;
+        right: 14px;
+
+        width: 38px;
+        height: 38px;
+
+        font-size: 24px;
+    }
+
+    .member-profile-header {
+        flex-direction: column;
+
+        gap: 22px;
+
+        padding:
+            18px
+            30px
+            4px;
+
+        text-align: center;
+    }
+
+    .member-profile-avatar-wrapper {
+        width: 128px;
+        height: 128px;
+    }
+
+    .member-profile-identity {
+        width: 100%;
+
+        text-align: center;
+    }
+
+    .member-profile-identity h2 {
+        font-size: 29px;
+    }
+
+    .member-profile-divider {
+        margin:
+            24px
+            0;
+    }
+
+    .member-profile-badges-list {
+        grid-template-columns: 1fr;
+    }
+
+    .member-profile-actions {
+        justify-content: stretch;
+    }
+
+    .member-profile-discord-link {
+        width: 100%;
+    }
+}
+
+/* =====================================================
+   VERY SMALL MOBILE
+===================================================== */
+
+@media (max-width: 380px) {
+    .member-profile-panel {
+        padding:
+            30px
+            16px
+            22px;
+    }
+
+    .member-profile-avatar-wrapper {
+        width: 112px;
+        height: 112px;
+    }
+
+    .member-profile-identity h2 {
+        font-size: 25px;
+    }
+
+    .member-profile-badge {
+        padding:
+            11px
+            12px;
+    }
 }
 
 /* =====================================================
@@ -1503,13 +2387,22 @@ header .brand::after {
     .member-badge,
     .member-badge-tooltip,
     .member-role-filter,
-    .member-search-clear {
+    .member-search-clear,
+    .member-profile-hint,
+    .member-profile-modal,
+    .member-profile-panel,
+    .member-profile-close,
+    .member-profile-decoration,
+    .member-profile-discord-link {
         transition: none !important;
     }
 
     .member-card:hover,
     .member-badge:hover,
-    .member-card:hover .member-avatar {
+    .member-card:hover
+    .member-avatar,
+    .member-profile-close:hover,
+    .member-profile-discord-link:hover {
         transform: none;
     }
 }
