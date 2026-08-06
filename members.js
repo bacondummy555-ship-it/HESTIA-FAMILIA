@@ -9,8 +9,6 @@ const MEMBERS_API_URL =
 
 /* =====================================================
    MANUAL MEMBER BADGES
-
-   Add badges using each member's Discord user ID.
 ===================================================== */
 
 const MEMBER_BADGES = {
@@ -21,20 +19,20 @@ const MEMBER_BADGES = {
         "booster",
         "veteran",
         "active"
-    ]
-   // CAS
-   ,"1230419514907295747": [
-      "founder",
-      "creator",
-      "active"
-      ]
+    ],
 
-   // AKI
-   ,"1419867997643735070": [
-      "overseer",
-      "active"
-      ]
-      
+    // CAS
+    "1230419514907295747": [
+        "founder",
+        "creator",
+        "active"
+    ],
+
+    // AKI
+    "1419867997643735070": [
+        "overseer",
+        "active"
+    ]
 
     /*
     Add another member like this:
@@ -48,7 +46,7 @@ const MEMBER_BADGES = {
 };
 
 /* =====================================================
-   AVAILABLE BADGES
+   BADGE DEFINITIONS
 ===================================================== */
 
 const BADGE_DEFINITIONS = {
@@ -145,7 +143,7 @@ const BADGE_DEFINITIONS = {
 };
 
 /* =====================================================
-   PAGE ELEMENTS
+   MEMBERS PAGE ELEMENTS
 ===================================================== */
 
 const memberGrid =
@@ -167,12 +165,70 @@ const memberRoleFilters =
     document.getElementById("member-role-filters");
 
 /* =====================================================
+   PROFILE MODAL ELEMENTS
+===================================================== */
+
+const memberProfileModal =
+    document.getElementById("member-profile-modal");
+
+const memberProfileClose =
+    document.getElementById("member-profile-close");
+
+const memberProfileAvatarWrapper =
+    document.getElementById(
+        "member-profile-avatar-wrapper"
+    );
+
+const memberProfileAvatar =
+    document.getElementById("member-profile-avatar");
+
+const memberProfileDecoration =
+    document.getElementById(
+        "member-profile-decoration"
+    );
+
+const memberProfileRank =
+    document.getElementById("member-profile-rank");
+
+const memberProfileName =
+    document.getElementById("member-profile-name");
+
+const memberProfileUsername =
+    document.getElementById("member-profile-username");
+
+const memberProfileBadges =
+    document.getElementById("member-profile-badges");
+
+const memberProfileNoBadges =
+    document.getElementById(
+        "member-profile-no-badges"
+    );
+
+const memberProfileRoles =
+    document.getElementById("member-profile-roles");
+
+const memberProfileDiscordLink =
+    document.getElementById(
+        "member-profile-discord-link"
+    );
+
+/* =====================================================
    STATE
 ===================================================== */
 
 let allMembers = [];
-let activeRoleFilter = "all";
-let searchEventsEnabled = false;
+
+let activeRoleFilter =
+    "all";
+
+let searchEventsEnabled =
+    false;
+
+let activeProfileMember =
+    null;
+
+let previouslyFocusedElement =
+    null;
 
 /* =====================================================
    LOAD MEMBERS
@@ -202,13 +258,25 @@ async function loadDiscordMembers() {
                     cache: "no-store",
 
                     headers: {
-                        Accept: "application/json"
+                        Accept:
+                            "application/json"
                     }
                 }
             );
 
-        const data =
-            await response.json();
+        const responseText =
+            await response.text();
+
+        let data;
+
+        try {
+            data =
+                JSON.parse(responseText);
+        } catch {
+            throw new Error(
+                "The Members API returned invalid JSON."
+            );
+        }
 
         if (!response.ok) {
             throw new Error(
@@ -230,7 +298,11 @@ async function loadDiscordMembers() {
             data.members;
 
         buildRoleFilters(allMembers);
+
         enableMemberSearch();
+
+        initializeMemberProfileModal();
+
         renderFilteredMembers();
 
         membersStatus.textContent =
@@ -275,7 +347,8 @@ function enableMemberSearch() {
         clearMemberSearch
     );
 
-    searchEventsEnabled = true;
+    searchEventsEnabled =
+        true;
 }
 
 function handleMemberSearch() {
@@ -297,10 +370,12 @@ function clearMemberSearch() {
         return;
     }
 
-    memberSearch.value = "";
+    memberSearch.value =
+        "";
 
     if (memberSearchClear) {
-        memberSearchClear.hidden = true;
+        memberSearchClear.hidden =
+            true;
     }
 
     renderFilteredMembers();
@@ -338,8 +413,12 @@ function buildRoleFilters(members) {
             roleMap.set(
                 roleKey,
                 {
-                    id: roleKey,
-                    name: roleName,
+                    id:
+                        roleKey,
+
+                    name:
+                        roleName,
+
                     position:
                         Number(
                             role.position || 0
@@ -352,12 +431,14 @@ function buildRoleFilters(members) {
     const roles =
         Array.from(
             roleMap.values()
-        ).sort((first, second) => {
-            return (
-                second.position -
-                first.position
-            );
-        });
+        ).sort(
+            (first, second) => {
+                return (
+                    second.position -
+                    first.position
+                );
+            }
+        );
 
     memberRoleFilters.replaceChildren();
 
@@ -409,6 +490,7 @@ function createRoleFilterButton(
                 String(roleId);
 
             updateActiveFilterButton();
+
             renderFilteredMembers();
         }
     );
@@ -478,8 +560,9 @@ function renderFilteredMembers() {
                 !query ||
                 displayName.includes(query) ||
                 username.includes(query) ||
-                roleNames.some((roleName) =>
-                    roleName.includes(query)
+                roleNames.some(
+                    (roleName) =>
+                        roleName.includes(query)
                 );
 
             return (
@@ -606,7 +689,8 @@ function groupMembersByRole(members) {
                             role.color || 0
                         ),
 
-                    members: []
+                    members:
+                        []
                 }
             );
         }
@@ -619,12 +703,14 @@ function groupMembersByRole(members) {
 
     return Array.from(
         groups.values()
-    ).sort((first, second) => {
-        return (
-            second.rolePosition -
-            first.rolePosition
-        );
-    });
+    ).sort(
+        (first, second) => {
+            return (
+                second.rolePosition -
+                first.rolePosition
+            );
+        }
+    );
 }
 
 /* =====================================================
@@ -690,7 +776,8 @@ function createRoleSection(group) {
                     secondName,
                     undefined,
                     {
-                        sensitivity: "base"
+                        sensitivity:
+                            "base"
                     }
                 );
             }
@@ -716,7 +803,7 @@ function createRoleSection(group) {
 }
 
 /* =====================================================
-   BADGES
+   BADGE HELPERS
 ===================================================== */
 
 function getMemberBadgeKeys(member) {
@@ -725,14 +812,25 @@ function getMemberBadgeKeys(member) {
     }
 
     const badgeKeys =
-        MEMBER_BADGES[String(member.id)];
+        MEMBER_BADGES[
+            String(member.id)
+        ];
 
     return Array.isArray(badgeKeys)
         ? badgeKeys
         : [];
 }
 
-function createMemberBadges(member) {
+function createMemberBadges(
+    member,
+    options = {}
+) {
+    const {
+        limit = 5,
+        modal = false
+    } =
+        options;
+
     const badgeKeys =
         getMemberBadgeKeys(member);
 
@@ -744,13 +842,17 @@ function createMemberBadges(member) {
         document.createElement("div");
 
     container.className =
-        "member-badges";
+        modal
+            ? "member-profile-badges-list"
+            : "member-badges";
 
     badgeKeys
-        .slice(0, 5)
+        .slice(0, limit)
         .forEach((badgeKey) => {
             const badge =
-                BADGE_DEFINITIONS[badgeKey];
+                BADGE_DEFINITIONS[
+                    badgeKey
+                ];
 
             if (!badge) {
                 console.warn(
@@ -761,10 +863,16 @@ function createMemberBadges(member) {
             }
 
             const badgeElement =
-                document.createElement("span");
+                document.createElement(
+                    modal
+                        ? "div"
+                        : "span"
+                );
 
             badgeElement.className =
-                `member-badge member-badge-${badge.className}`;
+                modal
+                    ? `member-profile-badge member-badge-${badge.className}`
+                    : `member-badge member-badge-${badge.className}`;
 
             badgeElement.title =
                 `${badge.label} — ${badge.description}`;
@@ -774,30 +882,65 @@ function createMemberBadges(member) {
                 `${badge.label}: ${badge.description}`
             );
 
-            badgeElement.tabIndex = 0;
+            if (!modal) {
+                badgeElement.tabIndex =
+                    0;
+            }
 
             const icon =
                 document.createElement("span");
 
             icon.className =
-                "member-badge-icon";
+                modal
+                    ? "member-profile-badge-icon"
+                    : "member-badge-icon";
 
             icon.textContent =
                 badge.icon;
 
-            const tooltip =
-                document.createElement("span");
+            if (modal) {
+                const textWrapper =
+                    document.createElement("div");
 
-            tooltip.className =
-                "member-badge-tooltip";
+                textWrapper.className =
+                    "member-profile-badge-text";
 
-            tooltip.textContent =
-                badge.label;
+                const label =
+                    document.createElement("strong");
 
-            badgeElement.append(
-                icon,
-                tooltip
-            );
+                label.textContent =
+                    badge.label;
+
+                const description =
+                    document.createElement("span");
+
+                description.textContent =
+                    badge.description;
+
+                textWrapper.append(
+                    label,
+                    description
+                );
+
+                badgeElement.append(
+                    icon,
+                    textWrapper
+                );
+            } else {
+                const tooltip =
+                    document.createElement("span");
+
+                tooltip.className =
+                    "member-badge-tooltip";
+
+                tooltip.textContent =
+                    badge.label;
+
+                badgeElement.append(
+                    icon,
+                    tooltip
+                );
+            }
 
             container.appendChild(
                 badgeElement
@@ -892,29 +1035,36 @@ function createMemberCard(member) {
         member.username ||
         "unknown";
 
-    const memberId =
-        String(
-            member.id || ""
-        );
-
-    const profileUrl =
-        member.profileUrl ||
-        `https://discord.com/users/${memberId}`;
+    /*
+    The card is now a button instead of a Discord link.
+    Clicking it opens the profile modal.
+    */
 
     const card =
-        document.createElement("a");
+        document.createElement("button");
 
     card.className =
         "member-card";
 
-    card.href =
-        profileUrl;
+    card.type =
+        "button";
 
-    card.target =
-        "_blank";
+    card.dataset.memberId =
+        String(member.id || "");
 
-    card.rel =
-        "noopener noreferrer";
+    card.setAttribute(
+        "aria-label",
+        `View ${displayName}'s Hestia profile`
+    );
+
+    card.addEventListener(
+        "click",
+        () => {
+            openMemberProfile(
+                member
+            );
+        }
+    );
 
     const avatarContainer =
         document.createElement("div");
@@ -1009,7 +1159,9 @@ function createMemberCard(member) {
         displayName;
 
     const badges =
-        createMemberBadges(member);
+        createMemberBadges(
+            member
+        );
 
     const usernameElement =
         document.createElement("p");
@@ -1019,6 +1171,15 @@ function createMemberCard(member) {
 
     usernameElement.textContent =
         `@${username}`;
+
+    const profileHint =
+        document.createElement("span");
+
+    profileHint.className =
+        "member-profile-hint";
+
+    profileHint.textContent =
+        "View Profile";
 
     card.append(
         avatarContainer,
@@ -1032,11 +1193,507 @@ function createMemberCard(member) {
         );
     }
 
-    card.appendChild(
-        usernameElement
+    card.append(
+        usernameElement,
+        profileHint
     );
 
     return card;
+}
+
+/* =====================================================
+   INITIALIZE PROFILE MODAL
+===================================================== */
+
+function initializeMemberProfileModal() {
+    if (!memberProfileModal) {
+        return;
+    }
+
+    memberProfileClose?.addEventListener(
+        "click",
+        closeMemberProfile
+    );
+
+    const backdropCloseElements =
+        memberProfileModal.querySelectorAll(
+            "[data-close-member-profile]"
+        );
+
+    backdropCloseElements.forEach(
+        (element) => {
+            element.addEventListener(
+                "click",
+                closeMemberProfile
+            );
+        }
+    );
+
+    memberProfileModal.addEventListener(
+        "click",
+        (event) => {
+            if (
+                event.target ===
+                memberProfileModal
+            ) {
+                closeMemberProfile();
+            }
+        }
+    );
+
+    document.addEventListener(
+        "keydown",
+        handleProfileModalKeydown
+    );
+}
+
+/* =====================================================
+   OPEN PROFILE MODAL
+===================================================== */
+
+function openMemberProfile(member) {
+    if (
+        !memberProfileModal ||
+        !member
+    ) {
+        return;
+    }
+
+    activeProfileMember =
+        member;
+
+    previouslyFocusedElement =
+        document.activeElement instanceof HTMLElement
+            ? document.activeElement
+            : null;
+
+    populateMemberProfile(
+        member
+    );
+
+    memberProfileModal.classList.add(
+        "visible"
+    );
+
+    memberProfileModal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    document.body.classList.add(
+        "member-profile-modal-open"
+    );
+
+    window.requestAnimationFrame(
+        () => {
+            memberProfileClose?.focus();
+        }
+    );
+}
+
+/* =====================================================
+   POPULATE PROFILE
+===================================================== */
+
+function populateMemberProfile(member) {
+    const displayName =
+        member.displayName ||
+        member.username ||
+        "Unknown Member";
+
+    const username =
+        member.username ||
+        "unknown";
+
+    const memberId =
+        String(
+            member.id || ""
+        );
+
+    const profileUrl =
+        member.profileUrl ||
+        `https://discord.com/users/${memberId}`;
+
+    const avatarUrl =
+        member.avatarUrl ||
+        "https://cdn.discordapp.com/embed/avatars/0.png";
+
+    const decorationUrl =
+        String(
+            member.avatarDecorationUrl ||
+            ""
+        ).trim();
+
+    const highestRole =
+        getHighestRole(member);
+
+    /* Avatar */
+
+    if (memberProfileAvatar) {
+        memberProfileAvatar.src =
+            avatarUrl;
+
+        memberProfileAvatar.alt =
+            `${displayName}'s Discord avatar`;
+
+        memberProfileAvatar.onerror =
+            () => {
+                memberProfileAvatar.onerror =
+                    null;
+
+                memberProfileAvatar.src =
+                    "https://cdn.discordapp.com/embed/avatars/0.png";
+            };
+    }
+
+    /* Avatar decoration */
+
+    if (
+        memberProfileDecoration &&
+        memberProfileAvatarWrapper
+    ) {
+        memberProfileAvatarWrapper.classList.remove(
+            "has-decoration"
+        );
+
+        memberProfileDecoration.hidden =
+            true;
+
+        memberProfileDecoration.removeAttribute(
+            "src"
+        );
+
+        if (decorationUrl) {
+            memberProfileDecoration.src =
+                decorationUrl;
+
+            memberProfileDecoration.hidden =
+                false;
+
+            memberProfileDecoration.onload =
+                () => {
+                    memberProfileAvatarWrapper.classList.add(
+                        "has-decoration"
+                    );
+
+                    memberProfileDecoration.classList.add(
+                        "loaded"
+                    );
+                };
+
+            memberProfileDecoration.onerror =
+                () => {
+                    memberProfileDecoration.hidden =
+                        true;
+
+                    memberProfileDecoration.removeAttribute(
+                        "src"
+                    );
+
+                    memberProfileAvatarWrapper.classList.remove(
+                        "has-decoration"
+                    );
+                };
+        }
+    }
+
+    /* Identity */
+
+    if (memberProfileRank) {
+        memberProfileRank.textContent =
+            highestRole.name ||
+            "Member";
+
+        const roleColor =
+            Number(
+                highestRole.color || 0
+            );
+
+        memberProfileRank.style.color =
+            roleColor > 0
+                ? decimalColorToHex(roleColor)
+                : "#d4af37";
+    }
+
+    if (memberProfileName) {
+        memberProfileName.textContent =
+            displayName;
+    }
+
+    if (memberProfileUsername) {
+        memberProfileUsername.textContent =
+            `@${username}`;
+    }
+
+    /* Badges */
+
+    populateProfileBadges(
+        member
+    );
+
+    /* Roles */
+
+    populateProfileRoles(
+        member
+    );
+
+    /* Discord link */
+
+    if (memberProfileDiscordLink) {
+        memberProfileDiscordLink.href =
+            profileUrl;
+    }
+}
+
+/* =====================================================
+   PROFILE BADGES
+===================================================== */
+
+function populateProfileBadges(member) {
+    if (!memberProfileBadges) {
+        return;
+    }
+
+    memberProfileBadges.replaceChildren();
+
+    const badges =
+        createMemberBadges(
+            member,
+            {
+                limit:
+                    Number.POSITIVE_INFINITY,
+
+                modal:
+                    true
+            }
+        );
+
+    if (badges) {
+        while (badges.firstChild) {
+            memberProfileBadges.appendChild(
+                badges.firstChild
+            );
+        }
+    }
+
+    const hasBadges =
+        memberProfileBadges.children.length > 0;
+
+    if (memberProfileNoBadges) {
+        memberProfileNoBadges.hidden =
+            hasBadges;
+    }
+}
+
+/* =====================================================
+   PROFILE DISCORD ROLES
+===================================================== */
+
+function populateProfileRoles(member) {
+    if (!memberProfileRoles) {
+        return;
+    }
+
+    memberProfileRoles.replaceChildren();
+
+    const roles =
+        getMemberRoles(member);
+
+    if (roles.length === 0) {
+        const empty =
+            document.createElement("p");
+
+        empty.className =
+            "member-profile-empty";
+
+        empty.textContent =
+            "No Discord roles available.";
+
+        memberProfileRoles.appendChild(
+            empty
+        );
+
+        return;
+    }
+
+    roles.forEach((role) => {
+        const roleElement =
+            document.createElement("span");
+
+        roleElement.className =
+            "member-profile-role";
+
+        roleElement.textContent =
+            role.name ||
+            "Member";
+
+        const roleColor =
+            Number(
+                role.color || 0
+            );
+
+        if (roleColor > 0) {
+            const hexColor =
+                decimalColorToHex(
+                    roleColor
+                );
+
+            roleElement.style.color =
+                hexColor;
+
+            roleElement.style.borderColor =
+                `${hexColor}88`;
+
+            roleElement.style.background =
+                `${hexColor}16`;
+        }
+
+        memberProfileRoles.appendChild(
+            roleElement
+        );
+    });
+}
+
+/* =====================================================
+   CLOSE PROFILE MODAL
+===================================================== */
+
+function closeMemberProfile() {
+    if (!memberProfileModal) {
+        return;
+    }
+
+    memberProfileModal.classList.remove(
+        "visible"
+    );
+
+    memberProfileModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.classList.remove(
+        "member-profile-modal-open"
+    );
+
+    resetMemberProfile();
+
+    activeProfileMember =
+        null;
+
+    if (previouslyFocusedElement) {
+        previouslyFocusedElement.focus();
+    }
+
+    previouslyFocusedElement =
+        null;
+}
+
+function resetMemberProfile() {
+    if (memberProfileDecoration) {
+        memberProfileDecoration.hidden =
+            true;
+
+        memberProfileDecoration.classList.remove(
+            "loaded"
+        );
+
+        memberProfileDecoration.removeAttribute(
+            "src"
+        );
+    }
+
+    memberProfileAvatarWrapper?.classList.remove(
+        "has-decoration"
+    );
+}
+
+/* =====================================================
+   PROFILE KEYBOARD CONTROL
+===================================================== */
+
+function handleProfileModalKeydown(event) {
+    if (
+        !memberProfileModal?.classList.contains(
+            "visible"
+        )
+    ) {
+        return;
+    }
+
+    if (event.key === "Escape") {
+        event.preventDefault();
+
+        closeMemberProfile();
+
+        return;
+    }
+
+    if (event.key === "Tab") {
+        trapProfileModalFocus(
+            event
+        );
+    }
+}
+
+function trapProfileModalFocus(event) {
+    if (!memberProfileModal) {
+        return;
+    }
+
+    const focusableElements =
+        Array.from(
+            memberProfileModal.querySelectorAll(
+                [
+                    "button:not([disabled])",
+                    "a[href]",
+                    "input:not([disabled])",
+                    "select:not([disabled])",
+                    "textarea:not([disabled])",
+                    '[tabindex]:not([tabindex="-1"])'
+                ].join(",")
+            )
+        ).filter((element) => {
+            return (
+                element instanceof HTMLElement &&
+                !element.hidden &&
+                element.offsetParent !== null
+            );
+        });
+
+    if (focusableElements.length === 0) {
+        event.preventDefault();
+
+        return;
+    }
+
+    const firstElement =
+        focusableElements[0];
+
+    const lastElement =
+        focusableElements[
+            focusableElements.length - 1
+        ];
+
+    if (
+        event.shiftKey &&
+        document.activeElement === firstElement
+    ) {
+        event.preventDefault();
+
+        lastElement.focus();
+
+        return;
+    }
+
+    if (
+        !event.shiftKey &&
+        document.activeElement === lastElement
+    ) {
+        event.preventDefault();
+
+        firstElement.focus();
+    }
 }
 
 /* =====================================================
@@ -1045,30 +1702,60 @@ function createMemberCard(member) {
 
 function getHighestRole(member) {
     return member?.highestRole || {
-        id: null,
-        name: "Member",
-        position: 0,
-        color: 0
+        id:
+            null,
+
+        name:
+            "Member",
+
+        position:
+            0,
+
+        color:
+            0
     };
 }
 
-function getMemberRoleNames(member) {
+function getMemberRoles(member) {
     if (
         Array.isArray(member?.allRoles) &&
         member.allRoles.length > 0
     ) {
-        return member.allRoles.map((role) =>
+        return [...member.allRoles]
+            .filter((role) => {
+                return (
+                    role &&
+                    role.name &&
+                    role.name !== "@everyone"
+                );
+            })
+            .sort((first, second) => {
+                return (
+                    Number(
+                        second.position || 0
+                    ) -
+                    Number(
+                        first.position || 0
+                    )
+                );
+            });
+    }
+
+    const highestRole =
+        getHighestRole(member);
+
+    return highestRole?.name
+        ? [highestRole]
+        : [];
+}
+
+function getMemberRoleNames(member) {
+    return getMemberRoles(member).map(
+        (role) =>
             normalizeSearchText(
                 role?.name
             )
-        );
-    }
-
-    return [
-        normalizeSearchText(
-            member?.highestRole?.name
-        )
-    ];
+    );
 }
 
 function normalizeSearchText(value) {
