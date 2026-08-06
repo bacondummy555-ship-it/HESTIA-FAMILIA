@@ -1,9 +1,12 @@
 "use strict";
 
-/*
-Use the exact same working Worker URL
-that is currently inside members.js.
-*/
+/* =====================================================
+   HESTIA FAMILIA — HOMEPAGE
+===================================================== */
+
+/* =====================================================
+   API URLS
+===================================================== */
 
 const HOME_MEMBERS_API_URL =
     "https://hestia-members-api.bacondummy555.workers.dev/members";
@@ -11,89 +14,151 @@ const HOME_MEMBERS_API_URL =
 const VISITOR_API_URL =
     "https://hestia-visitor-counter.bacondummy555.workers.dev";
 
+const HOME_GALLERY_API_URL =
+    "https://hestia-gallery-api.bacondummy555.workers.dev/gallery";
+
+/* =====================================================
+   PAGE ELEMENTS
+===================================================== */
+
 const revealSections =
-    document.querySelectorAll(".reveal-section");
+    document.querySelectorAll(
+        ".reveal-section"
+    );
 
 const backToTopButton =
-    document.getElementById("back-to-top");
+    document.getElementById(
+        "back-to-top"
+    );
+
+/* Statistics */
 
 const statisticsStatus =
-    document.getElementById("home-statistics-status");
+    document.getElementById(
+        "home-statistics-status"
+    );
 
 const memberStatistic =
-    document.getElementById("stat-members");
+    document.getElementById(
+        "stat-members"
+    );
 
 const leadershipStatistic =
-    document.getElementById("stat-leadership");
+    document.getElementById(
+        "stat-leadership"
+    );
 
 const highCouncilStatistic =
-    document.getElementById("stat-admins");
+    document.getElementById(
+        "stat-admins"
+    );
 
 const staffStatistic =
-    document.getElementById("stat-staff");
+    document.getElementById(
+        "stat-staff"
+    );
+
+/* Featured gallery */
+
+const featuredGalleryGrid =
+    document.getElementById(
+        "featured-gallery-grid"
+    );
+
+const featuredGalleryStatus =
+    document.getElementById(
+        "featured-gallery-status"
+    );
 
 /* =====================================================
    SECTION REVEAL
 ===================================================== */
 
-if ("IntersectionObserver" in window) {
+function initializeSectionReveal() {
+    if (
+        !(
+            "IntersectionObserver"
+            in window
+        )
+    ) {
+        revealSections.forEach(
+            (section) => {
+                section.classList.add(
+                    "visible"
+                );
+            }
+        );
+
+        return;
+    }
+
     const revealObserver =
         new IntersectionObserver(
             (entries, observer) => {
-                entries.forEach((entry) => {
-                    if (!entry.isIntersecting) {
-                        return;
+                entries.forEach(
+                    (entry) => {
+                        if (
+                            !entry.isIntersecting
+                        ) {
+                            return;
+                        }
+
+                        entry.target.classList.add(
+                            "visible"
+                        );
+
+                        observer.unobserve(
+                            entry.target
+                        );
                     }
-
-                    entry.target.classList.add("visible");
-
-                    observer.unobserve(entry.target);
-                });
+                );
             },
             {
                 threshold: 0.12
             }
         );
 
-    revealSections.forEach((section) => {
-        revealObserver.observe(section);
-    });
-} else {
-    revealSections.forEach((section) => {
-        section.classList.add("visible");
-    });
+    revealSections.forEach(
+        (section) => {
+            revealObserver.observe(
+                section
+            );
+        }
+    );
 }
 
 /* =====================================================
    BACK TO TOP
 ===================================================== */
 
-window.addEventListener(
-    "scroll",
-    () => {
-        if (!backToTopButton) {
-            return;
+function initializeBackToTop() {
+    window.addEventListener(
+        "scroll",
+        () => {
+            if (!backToTopButton) {
+                return;
+            }
+
+            backToTopButton.classList.toggle(
+                "visible",
+                window.scrollY > 650
+            );
+        },
+        {
+            passive: true
         }
+    );
 
-        backToTopButton.classList.toggle(
-            "visible",
-            window.scrollY > 650
-        );
-    },
-    {
-        passive: true
-    }
-);
-
-backToTopButton?.addEventListener(
-    "click",
-    () => {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-    }
-);
+    backToTopButton?.addEventListener(
+        "click",
+        () => {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+    );
+}
 
 /* =====================================================
    LIVE DISCORD STATISTICS
@@ -127,18 +192,34 @@ async function loadHomepageStatistics() {
                     cache: "no-store",
 
                     headers: {
-                        Accept: "application/json"
+                        Accept:
+                            "application/json"
                     }
                 }
             );
 
-        const data =
-            await response.json();
+        const responseText =
+            await response.text();
+
+        let data;
+
+        try {
+            data =
+                JSON.parse(
+                    responseText
+                );
+        } catch {
+            throw new Error(
+                "The member API returned invalid JSON."
+            );
+        }
 
         if (
             !response.ok ||
             data.success !== true ||
-            !Array.isArray(data.members)
+            !Array.isArray(
+                data.members
+            )
         ) {
             throw new Error(
                 data.error ||
@@ -155,57 +236,75 @@ async function loadHomepageStatistics() {
             staff: 0
         };
 
-        members.forEach((member) => {
-            const roleNames =
-                getMemberRoleNames(member);
-
-            const hasRole = (...roleSearchNames) => {
-                return roleNames.some((roleName) => {
-                    return roleSearchNames.some(
-                        (roleSearchName) => {
-                            return roleName.includes(
-                                normalizeText(
-                                    roleSearchName
-                                )
-                            );
-                        }
+        members.forEach(
+            (member) => {
+                const roleNames =
+                    getMemberRoleNames(
+                        member
                     );
-                });
-            };
 
-            if (
-                hasRole(
-                    "owner",
-                    "leader",
-                    "co-leader",
-                    "co leader",
-                    "leadership",
-                    "overseer"
-                )
-            ) {
-                counts.leadership += 1;
-            }
+                const hasRole =
+                    (
+                        ...roleSearchNames
+                    ) => {
+                        return roleNames.some(
+                            (roleName) => {
+                                return roleSearchNames.some(
+                                    (
+                                        roleSearchName
+                                    ) => {
+                                        return roleName.includes(
+                                            normalizeText(
+                                                roleSearchName
+                                            )
+                                        );
+                                    }
+                                );
+                            }
+                        );
+                    };
 
-            if (
-                hasRole(
-                    "high council",
-                    "admin",
-                    "administrator"
-                )
-            ) {
-                counts.highCouncil += 1;
-            }
+                if (
+                    hasRole(
+                        "owner",
+                        "leader",
+                        "leaders",
+                        "co-leader",
+                        "co leader",
+                        "co-headmaster",
+                        "co headmaster",
+                        "headmaster",
+                        "leadership",
+                        "overseer"
+                    )
+                ) {
+                    counts.leadership +=
+                        1;
+                }
 
-            if (
-                hasRole(
-                    "staff",
-                    "helper",
-                    "moderator"
-                )
-            ) {
-                counts.staff += 1;
+                if (
+                    hasRole(
+                        "high council",
+                        "admin",
+                        "administrator"
+                    )
+                ) {
+                    counts.highCouncil +=
+                        1;
+                }
+
+                if (
+                    hasRole(
+                        "staff",
+                        "helper",
+                        "moderator"
+                    )
+                ) {
+                    counts.staff +=
+                        1;
+                }
             }
-        });
+        );
 
         setStatisticTarget(
             memberStatistic,
@@ -263,14 +362,24 @@ async function loadHomepageStatistics() {
     }
 }
 
+/* =====================================================
+   MEMBER ROLE HELPERS
+===================================================== */
+
 function getMemberRoleNames(member) {
     if (
-        Array.isArray(member.allRoles) &&
+        Array.isArray(
+            member.allRoles
+        ) &&
         member.allRoles.length > 0
     ) {
-        return member.allRoles.map((role) => {
-            return normalizeText(role?.name);
-        });
+        return member.allRoles.map(
+            (role) => {
+                return normalizeText(
+                    role?.name
+                );
+            }
+        );
     }
 
     return [
@@ -286,7 +395,14 @@ function normalizeText(value) {
         .toLowerCase();
 }
 
-function setStatisticTarget(element, value) {
+/* =====================================================
+   STATISTIC ANIMATION
+===================================================== */
+
+function setStatisticTarget(
+    element,
+    value
+) {
     if (!element) {
         return;
     }
@@ -295,7 +411,9 @@ function setStatisticTarget(element, value) {
         Number(value);
 
     const safeValue =
-        Number.isFinite(numericValue)
+        Number.isFinite(
+            numericValue
+        )
             ? numericValue
             : 0;
 
@@ -312,10 +430,19 @@ function animateStatistics() {
             ".statistic-number"
         );
 
-    if (!("IntersectionObserver" in window)) {
-        statistics.forEach((statistic) => {
-            animateNumber(statistic);
-        });
+    if (
+        !(
+            "IntersectionObserver"
+            in window
+        )
+    ) {
+        statistics.forEach(
+            (statistic) => {
+                animateNumber(
+                    statistic
+                );
+            }
+        );
 
         return;
     }
@@ -323,28 +450,36 @@ function animateStatistics() {
     const statisticsObserver =
         new IntersectionObserver(
             (entries, observer) => {
-                entries.forEach((entry) => {
-                    if (!entry.isIntersecting) {
-                        return;
+                entries.forEach(
+                    (entry) => {
+                        if (
+                            !entry.isIntersecting
+                        ) {
+                            return;
+                        }
+
+                        animateNumber(
+                            entry.target
+                        );
+
+                        observer.unobserve(
+                            entry.target
+                        );
                     }
-
-                    animateNumber(
-                        entry.target
-                    );
-
-                    observer.unobserve(
-                        entry.target
-                    );
-                });
+                );
             },
             {
                 threshold: 0.7
             }
         );
 
-    statistics.forEach((statistic) => {
-        statisticsObserver.observe(statistic);
-    });
+    statistics.forEach(
+        (statistic) => {
+            statisticsObserver.observe(
+                statistic
+            );
+        }
+    );
 }
 
 function animateNumber(element) {
@@ -353,10 +488,14 @@ function animateNumber(element) {
     }
 
     const parsedTarget =
-        Number(element.dataset.target);
+        Number(
+            element.dataset.target
+        );
 
     const target =
-        Number.isFinite(parsedTarget)
+        Number.isFinite(
+            parsedTarget
+        )
             ? parsedTarget
             : 0;
 
@@ -368,7 +507,8 @@ function animateNumber(element) {
 
     function update(currentTime) {
         const elapsed =
-            currentTime - startTime;
+            currentTime -
+            startTime;
 
         const progress =
             Math.min(
@@ -393,14 +533,18 @@ function animateNumber(element) {
             currentValue.toLocaleString();
 
         if (progress < 1) {
-            requestAnimationFrame(update);
+            requestAnimationFrame(
+                update
+            );
         } else {
             element.textContent =
                 target.toLocaleString();
         }
     }
 
-    requestAnimationFrame(update);
+    requestAnimationFrame(
+        update
+    );
 }
 
 /* =====================================================
@@ -409,7 +553,9 @@ function animateNumber(element) {
 
 async function loadVisitorCounter() {
     const visitorElement =
-        document.getElementById("stat-visitors");
+        document.getElementById(
+            "stat-visitors"
+        );
 
     if (!visitorElement) {
         return;
@@ -422,7 +568,9 @@ async function loadVisitorCounter() {
         getLocalDateKey();
 
     const alreadyCountedToday =
-        localStorage.getItem(storageKey) === today;
+        localStorage.getItem(
+            storageKey
+        ) === today;
 
     const endpoint =
         alreadyCountedToday
@@ -444,21 +592,39 @@ async function loadVisitorCounter() {
                     cache: "no-store",
 
                     headers: {
-                        Accept: "application/json"
+                        Accept:
+                            "application/json"
                     }
                 }
             );
 
-        const data =
-            await response.json();
+        const responseText =
+            await response.text();
+
+        let data;
+
+        try {
+            data =
+                JSON.parse(
+                    responseText
+                );
+        } catch {
+            throw new Error(
+                "The visitor API returned invalid JSON."
+            );
+        }
 
         const visitorCount =
-            Number(data.visitors);
+            Number(
+                data.visitors
+            );
 
         if (
             !response.ok ||
             data.success !== true ||
-            !Number.isFinite(visitorCount)
+            !Number.isFinite(
+                visitorCount
+            )
         ) {
             throw new Error(
                 data.error ||
@@ -475,7 +641,9 @@ async function loadVisitorCounter() {
             visitorElement
         );
 
-        if (!alreadyCountedToday) {
+        if (
+            !alreadyCountedToday
+        ) {
             localStorage.setItem(
                 storageKey,
                 today
@@ -503,19 +671,616 @@ function getLocalDateKey() {
     const month =
         String(
             now.getMonth() + 1
-        ).padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
     const day =
         String(
             now.getDate()
-        ).padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
-    return `${year}-${month}-${day}`;
+    return (
+        `${year}-${month}-${day}`
+    );
+}
+
+/* =====================================================
+   LIVE FEATURED GALLERY
+===================================================== */
+
+async function loadFeaturedGallery() {
+    if (
+        !featuredGalleryGrid
+    ) {
+        return;
+    }
+
+    featuredGalleryGrid.setAttribute(
+        "aria-busy",
+        "true"
+    );
+
+    featuredGalleryGrid.replaceChildren();
+
+    if (
+        featuredGalleryStatus
+    ) {
+        featuredGalleryStatus.textContent =
+            "Gathering the latest memories...";
+    }
+
+    try {
+        const response =
+            await fetch(
+                `${HOME_GALLERY_API_URL}?time=${Date.now()}`,
+                {
+                    method: "GET",
+                    mode: "cors",
+                    cache: "no-store",
+
+                    headers: {
+                        Accept:
+                            "application/json"
+                    }
+                }
+            );
+
+        const responseText =
+            await response.text();
+
+        let data;
+
+        try {
+            data =
+                JSON.parse(
+                    responseText
+                );
+        } catch {
+            throw new Error(
+                "The Gallery API returned invalid JSON."
+            );
+        }
+
+        if (
+            !response.ok ||
+            data.success !== true ||
+            !Array.isArray(
+                data.gallery
+            )
+        ) {
+            throw new Error(
+                data.error ||
+                "Unable to load featured memories."
+            );
+        }
+
+        const albums =
+            data.gallery
+                .filter(
+                    isValidFeaturedAlbum
+                )
+                .slice(
+                    0,
+                    4
+                );
+
+        if (
+            albums.length === 0
+        ) {
+            showFeaturedGalleryEmpty();
+
+            return;
+        }
+
+        const fragment =
+            document.createDocumentFragment();
+
+        albums.forEach(
+            (
+                album,
+                index
+            ) => {
+                fragment.appendChild(
+                    createFeaturedGalleryCard(
+                        album,
+                        index
+                    )
+                );
+            }
+        );
+
+        featuredGalleryGrid.appendChild(
+            fragment
+        );
+
+        if (
+            featuredGalleryStatus
+        ) {
+            const totalMedia =
+                albums.reduce(
+                    (
+                        total,
+                        album
+                    ) => {
+                        return (
+                            total +
+                            album.media.length
+                        );
+                    },
+                    0
+                );
+
+            featuredGalleryStatus.textContent =
+                `${albums.length} latest ${
+                    albums.length === 1
+                        ? "album"
+                        : "albums"
+                } featuring ${totalMedia} ${
+                    totalMedia === 1
+                        ? "memory"
+                        : "memories"
+                }`;
+        }
+
+    } catch (error) {
+        console.error(
+            "Featured gallery error:",
+            error
+        );
+
+        showFeaturedGalleryError(
+            error instanceof Error
+                ? error.message
+                : String(error)
+        );
+
+    } finally {
+        featuredGalleryGrid.setAttribute(
+            "aria-busy",
+            "false"
+        );
+    }
+}
+
+/* =====================================================
+   CREATE FEATURED GALLERY CARD
+===================================================== */
+
+function createFeaturedGalleryCard(
+    album,
+    index
+) {
+    const link =
+        document.createElement(
+            "a"
+        );
+
+    link.className =
+        "featured-image";
+
+    if (index === 0) {
+        link.classList.add(
+            "featured-image-large"
+        );
+    }
+
+    if (index === 3) {
+        link.classList.add(
+            "featured-image-wide"
+        );
+    }
+
+    link.href =
+        "gallery.html";
+
+    link.setAttribute(
+        "aria-label",
+        `View ${cleanDiscordText(
+            album.title ||
+            "Hestia Memory"
+        )} in the full gallery`
+    );
+
+    const cover =
+        getFeaturedAlbumCover(
+            album
+        );
+
+    if (
+        cover.type === "video"
+    ) {
+        const video =
+            document.createElement(
+                "video"
+            );
+
+        video.src =
+            cover.url;
+
+        video.className =
+            "featured-gallery-media";
+
+        video.muted =
+            true;
+
+        video.playsInline =
+            true;
+
+        video.preload =
+            "metadata";
+
+        video.setAttribute(
+            "aria-label",
+            album.title ||
+            "Hestia Familia video"
+        );
+
+        link.appendChild(
+            video
+        );
+
+    } else {
+        const image =
+            document.createElement(
+                "img"
+            );
+
+        image.src =
+            cover.proxyUrl ||
+            cover.url;
+
+        image.alt =
+            cleanDiscordText(
+                album.title ||
+                "Hestia Familia memory"
+            );
+
+        image.className =
+            "featured-gallery-media";
+
+        image.loading =
+            "lazy";
+
+        image.decoding =
+            "async";
+
+        image.draggable =
+            false;
+
+        image.addEventListener(
+            "error",
+            () => {
+                if (
+                    image.src !==
+                    cover.url
+                ) {
+                    image.src =
+                        cover.url;
+
+                    return;
+                }
+
+                image.classList.add(
+                    "featured-gallery-media-error"
+                );
+            }
+        );
+
+        link.appendChild(
+            image
+        );
+    }
+
+    const overlay =
+        document.createElement(
+            "span"
+        );
+
+    overlay.className =
+        "featured-gallery-overlay";
+
+    const title =
+        document.createElement(
+            "strong"
+        );
+
+    title.textContent =
+        cleanDiscordText(
+            album.title ||
+            "Hestia Memory"
+        );
+
+    const meta =
+        document.createElement(
+            "small"
+        );
+
+    meta.textContent =
+        createFeaturedAlbumMeta(
+            album
+        );
+
+    overlay.append(
+        title,
+        meta
+    );
+
+    link.appendChild(
+        overlay
+    );
+
+    return link;
+}
+
+/* =====================================================
+   FEATURED GALLERY HELPERS
+===================================================== */
+
+function isValidFeaturedAlbum(
+    album
+) {
+    if (
+        !album ||
+        !Array.isArray(
+            album.media
+        )
+    ) {
+        return false;
+    }
+
+    const validMedia =
+        album.media.filter(
+            (item) => {
+                return (
+                    item &&
+                    (
+                        item.type ===
+                            "image" ||
+                        item.type ===
+                            "video"
+                    ) &&
+                    Boolean(
+                        item.url
+                    )
+                );
+            }
+        );
+
+    if (
+        validMedia.length === 0
+    ) {
+        return false;
+    }
+
+    album.media =
+        validMedia;
+
+    return true;
+}
+
+function getFeaturedAlbumCover(
+    album
+) {
+    if (
+        album.cover &&
+        (
+            album.cover.type ===
+                "image" ||
+            album.cover.type ===
+                "video"
+        ) &&
+        album.cover.url
+    ) {
+        return album.cover;
+    }
+
+    return (
+        album.media.find(
+            (item) => {
+                return (
+                    item.type ===
+                    "image"
+                );
+            }
+        ) ||
+        album.media[0]
+    );
+}
+
+function createFeaturedAlbumMeta(
+    album
+) {
+    const photoCount =
+        Number(
+            album.photoCount || 0
+        );
+
+    const videoCount =
+        Number(
+            album.videoCount || 0
+        );
+
+    const parts = [];
+
+    if (
+        photoCount > 0
+    ) {
+        parts.push(
+            `${photoCount} ${
+                photoCount === 1
+                    ? "photo"
+                    : "photos"
+            }`
+        );
+    }
+
+    if (
+        videoCount > 0
+    ) {
+        parts.push(
+            `${videoCount} ${
+                videoCount === 1
+                    ? "video"
+                    : "videos"
+            }`
+        );
+    }
+
+    const uploader =
+        album.uploader ||
+        "Familia Member";
+
+    const mediaText =
+        parts.length > 0
+            ? parts.join(" • ")
+            : `${album.media.length} ${
+                album.media.length === 1
+                    ? "memory"
+                    : "memories"
+            }`;
+
+    return (
+        `${mediaText} • By ${uploader}`
+    );
+}
+
+function cleanDiscordText(
+    value
+) {
+    return String(
+        value || ""
+    )
+        .replace(
+            /<@!?(\d+)>/g,
+            "@Discord Member"
+        )
+        .replace(
+            /<@&(\d+)>/g,
+            "@Discord Role"
+        )
+        .replace(
+            /<#(\d+)>/g,
+            "#Discord Channel"
+        )
+        .trim();
+}
+
+/* =====================================================
+   FEATURED GALLERY EMPTY STATE
+===================================================== */
+
+function showFeaturedGalleryEmpty() {
+    if (
+        featuredGalleryStatus
+    ) {
+        featuredGalleryStatus.textContent =
+            "No approved memories are available yet.";
+    }
+
+    const message =
+        document.createElement(
+            "div"
+        );
+
+    message.className =
+        "featured-gallery-message";
+
+    const title =
+        document.createElement(
+            "strong"
+        );
+
+    title.textContent =
+        "The Familia gallery is waiting for its next memory.";
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+    link.href =
+        "gallery.html";
+
+    link.textContent =
+        "Visit the Gallery";
+
+    message.append(
+        title,
+        link
+    );
+
+    featuredGalleryGrid.replaceChildren(
+        message
+    );
+}
+
+/* =====================================================
+   FEATURED GALLERY ERROR STATE
+===================================================== */
+
+function showFeaturedGalleryError(
+    messageText
+) {
+    if (
+        featuredGalleryStatus
+    ) {
+        featuredGalleryStatus.textContent =
+            "The latest memories are temporarily unavailable.";
+    }
+
+    const message =
+        document.createElement(
+            "div"
+        );
+
+    message.className =
+        "featured-gallery-message featured-gallery-error";
+
+    const title =
+        document.createElement(
+            "strong"
+        );
+
+    title.textContent =
+        "Unable to load the latest memories.";
+
+    const description =
+        document.createElement(
+            "span"
+        );
+
+    description.textContent =
+        messageText;
+
+    message.append(
+        title,
+        description
+    );
+
+    featuredGalleryGrid.replaceChildren(
+        message
+    );
 }
 
 /* =====================================================
    INITIALIZE
 ===================================================== */
 
-loadHomepageStatistics();
-loadVisitorCounter();
+function initializeHomepage() {
+    initializeSectionReveal();
+
+    initializeBackToTop();
+
+    loadHomepageStatistics();
+
+    loadVisitorCounter();
+
+    loadFeaturedGallery();
+}
+
+initializeHomepage();
