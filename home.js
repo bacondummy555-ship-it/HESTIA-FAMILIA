@@ -283,15 +283,9 @@ async function loadHomepageStatistics() {
                 if (
                     hasRole(
                         "owner",
-                        "leader",
-                        "leaders",
-                        "co-leader",
-                        "co leader",
                         "co-headmaster",
                         "co headmaster",
                         "headmaster",
-                        "leadership",
-                        "overseer"
                     )
                 ) {
                     counts.leadership +=
@@ -308,9 +302,6 @@ async function loadHomepageStatistics() {
                 if (
                     hasRole(
                         "council",
-                        "high council",
-                        "admin",
-                        "administrator"
                     )
                 ) {
                     counts.council +=
@@ -324,8 +315,6 @@ async function loadHomepageStatistics() {
                 if (
                     hasRole(
                         "staff",
-                        "helper",
-                        "moderator"
                     )
                 ) {
                     counts.staff +=
