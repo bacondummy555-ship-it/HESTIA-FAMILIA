@@ -48,7 +48,12 @@ const leadershipStatistic =
         "stat-leadership"
     );
 
-const highCouncilStatistic =
+/*
+The HTML ID stays as stat-admins so you do not need
+to rebuild the statistics card.
+*/
+
+const councilStatistic =
     document.getElementById(
         "stat-admins"
     );
@@ -169,7 +174,7 @@ async function loadHomepageStatistics() {
         !statisticsStatus ||
         !memberStatistic ||
         !leadershipStatistic ||
-        !highCouncilStatistic ||
+        !councilStatistic ||
         !staffStatistic
     ) {
         console.error(
@@ -232,7 +237,7 @@ async function loadHomepageStatistics() {
 
         const counts = {
             leadership: 0,
-            highCouncil: 0,
+            council: 0,
             staff: 0
         };
 
@@ -247,14 +252,21 @@ async function loadHomepageStatistics() {
                     (
                         ...roleSearchNames
                     ) => {
+                        const normalizedSearchNames =
+                            roleSearchNames.map(
+                                normalizeText
+                            );
+
                         return roleNames.some(
                             (roleName) => {
-                                return roleSearchNames.some(
+                                return normalizedSearchNames.some(
                                     (
                                         roleSearchName
                                     ) => {
-                                        return roleName.includes(
-                                            normalizeText(
+                                        return (
+                                            roleName ===
+                                                roleSearchName ||
+                                            roleName.includes(
                                                 roleSearchName
                                             )
                                         );
@@ -263,6 +275,10 @@ async function loadHomepageStatistics() {
                             }
                         );
                     };
+
+                /*
+                Leadership count
+                */
 
                 if (
                     hasRole(
@@ -282,16 +298,28 @@ async function loadHomepageStatistics() {
                         1;
                 }
 
+                /*
+                Council count
+
+                "council" is the current role name.
+                Older names remain supported.
+                */
+
                 if (
                     hasRole(
+                        "council",
                         "high council",
                         "admin",
                         "administrator"
                     )
                 ) {
-                    counts.highCouncil +=
+                    counts.council +=
                         1;
                 }
+
+                /*
+                Staff count
+                */
 
                 if (
                     hasRole(
@@ -317,8 +345,8 @@ async function loadHomepageStatistics() {
         );
 
         setStatisticTarget(
-            highCouncilStatistic,
-            counts.highCouncil
+            councilStatistic,
+            counts.council
         );
 
         setStatisticTarget(
@@ -351,7 +379,7 @@ async function loadHomepageStatistics() {
         );
 
         setStatisticTarget(
-            highCouncilStatistic,
+            councilStatistic,
             0
         );
 
@@ -369,24 +397,24 @@ async function loadHomepageStatistics() {
 function getMemberRoleNames(member) {
     if (
         Array.isArray(
-            member.allRoles
+            member?.allRoles
         ) &&
         member.allRoles.length > 0
     ) {
-        return member.allRoles.map(
-            (role) => {
+        return member.allRoles
+            .map((role) => {
                 return normalizeText(
                     role?.name
                 );
-            }
-        );
+            })
+            .filter(Boolean);
     }
 
     return [
         normalizeText(
-            member.highestRole?.name
+            member?.highestRole?.name
         )
-    ];
+    ].filter(Boolean);
 }
 
 function normalizeText(value) {
@@ -641,9 +669,7 @@ async function loadVisitorCounter() {
             visitorElement
         );
 
-        if (
-            !alreadyCountedToday
-        ) {
+        if (!alreadyCountedToday) {
             localStorage.setItem(
                 storageKey,
                 today
@@ -694,9 +720,7 @@ function getLocalDateKey() {
 ===================================================== */
 
 async function loadFeaturedGallery() {
-    if (
-        !featuredGalleryGrid
-    ) {
+    if (!featuredGalleryGrid) {
         return;
     }
 
@@ -707,9 +731,7 @@ async function loadFeaturedGallery() {
 
     featuredGalleryGrid.replaceChildren();
 
-    if (
-        featuredGalleryStatus
-    ) {
+    if (featuredGalleryStatus) {
         featuredGalleryStatus.textContent =
             "Gathering the latest memories...";
     }
@@ -769,9 +791,7 @@ async function loadFeaturedGallery() {
                     4
                 );
 
-        if (
-            albums.length === 0
-        ) {
+        if (albums.length === 0) {
             showFeaturedGalleryEmpty();
 
             return;
@@ -798,9 +818,7 @@ async function loadFeaturedGallery() {
             fragment
         );
 
-        if (
-            featuredGalleryStatus
-        ) {
+        if (featuredGalleryStatus) {
             const totalMedia =
                 albums.reduce(
                     (
@@ -891,9 +909,7 @@ function createFeaturedGalleryCard(
             album
         );
 
-    if (
-        cover.type === "video"
-    ) {
+    if (cover.type === "video") {
         const video =
             document.createElement(
                 "video"
@@ -1021,9 +1037,7 @@ function createFeaturedGalleryCard(
    FEATURED GALLERY HELPERS
 ===================================================== */
 
-function isValidFeaturedAlbum(
-    album
-) {
+function isValidFeaturedAlbum(album) {
     if (
         !album ||
         !Array.isArray(
@@ -1051,9 +1065,7 @@ function isValidFeaturedAlbum(
             }
         );
 
-    if (
-        validMedia.length === 0
-    ) {
+    if (validMedia.length === 0) {
         return false;
     }
 
@@ -1063,9 +1075,7 @@ function isValidFeaturedAlbum(
     return true;
 }
 
-function getFeaturedAlbumCover(
-    album
-) {
+function getFeaturedAlbumCover(album) {
     if (
         album.cover &&
         (
@@ -1092,9 +1102,7 @@ function getFeaturedAlbumCover(
     );
 }
 
-function createFeaturedAlbumMeta(
-    album
-) {
+function createFeaturedAlbumMeta(album) {
     const photoCount =
         Number(
             album.photoCount || 0
@@ -1107,9 +1115,7 @@ function createFeaturedAlbumMeta(
 
     const parts = [];
 
-    if (
-        photoCount > 0
-    ) {
+    if (photoCount > 0) {
         parts.push(
             `${photoCount} ${
                 photoCount === 1
@@ -1119,9 +1125,7 @@ function createFeaturedAlbumMeta(
         );
     }
 
-    if (
-        videoCount > 0
-    ) {
+    if (videoCount > 0) {
         parts.push(
             `${videoCount} ${
                 videoCount === 1
@@ -1149,9 +1153,7 @@ function createFeaturedAlbumMeta(
     );
 }
 
-function cleanDiscordText(
-    value
-) {
+function cleanDiscordText(value) {
     return String(
         value || ""
     )
@@ -1175,9 +1177,7 @@ function cleanDiscordText(
 ===================================================== */
 
 function showFeaturedGalleryEmpty() {
-    if (
-        featuredGalleryStatus
-    ) {
+    if (featuredGalleryStatus) {
         featuredGalleryStatus.textContent =
             "No approved memories are available yet.";
     }
@@ -1226,9 +1226,7 @@ function showFeaturedGalleryEmpty() {
 function showFeaturedGalleryError(
     messageText
 ) {
-    if (
-        featuredGalleryStatus
-    ) {
+    if (featuredGalleryStatus) {
         featuredGalleryStatus.textContent =
             "The latest memories are temporarily unavailable.";
     }
