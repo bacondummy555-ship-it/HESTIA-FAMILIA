@@ -221,7 +221,130 @@
         </p>
 
     </main>
+<!-- =================================================
+     MEMBER PROFILE MODAL
+================================================== -->
 
+<div
+    id="member-profile-modal"
+    class="member-profile-modal"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="member-profile-name"
+>
+    <div
+        class="member-profile-backdrop"
+        data-close-member-profile
+    ></div>
+
+    <article class="member-profile-panel">
+
+        <button
+            id="member-profile-close"
+            class="member-profile-close"
+            type="button"
+            aria-label="Close member profile"
+        >
+            ×
+        </button>
+
+        <div class="member-profile-header">
+
+            <div
+                id="member-profile-avatar-wrapper"
+                class="member-profile-avatar-wrapper"
+            >
+                <img
+                    id="member-profile-avatar"
+                    class="member-profile-avatar"
+                    src="https://cdn.discordapp.com/embed/avatars/0.png"
+                    alt=""
+                >
+
+                <img
+                    id="member-profile-decoration"
+                    class="member-profile-decoration"
+                    src=""
+                    alt=""
+                    aria-hidden="true"
+                    hidden
+                >
+            </div>
+
+            <div class="member-profile-identity">
+
+                <p
+                    id="member-profile-rank"
+                    class="member-profile-rank"
+                >
+                    Member
+                </p>
+
+                <h2 id="member-profile-name">
+                    Hestia Member
+                </h2>
+
+                <p
+                    id="member-profile-username"
+                    class="member-profile-username"
+                >
+                    @username
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="member-profile-divider"></div>
+
+        <section class="member-profile-section">
+
+            <h3>Badges</h3>
+
+            <div
+                id="member-profile-badges"
+                class="member-profile-badges"
+            ></div>
+
+            <p
+                id="member-profile-no-badges"
+                class="member-profile-empty"
+                hidden
+            >
+                No website badges assigned.
+            </p>
+
+        </section>
+
+        <section class="member-profile-section">
+
+            <h3>Discord Roles</h3>
+
+            <div
+                id="member-profile-roles"
+                class="member-profile-roles"
+            ></div>
+
+        </section>
+
+        <div class="member-profile-actions">
+
+            <a
+                id="member-profile-discord-link"
+                class="member-profile-discord-link"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Open Discord Profile ↗
+            </a>
+
+        </div>
+
+    </article>
+
+</div>
     <!-- Scripts -->
 
     <script src="script.js?v=135"></script>
